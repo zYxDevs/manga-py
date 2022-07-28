@@ -30,11 +30,11 @@ class FreeAdultComixCom(Provider, Std):
 
     def get_files(self):
         images = self._elements('.single-post p > img[class*="wp-image-"]')
-        if not len(images):
-            items = self._external_images()
-        else:
-            items = [i.get('src') for i in images]
-        return items
+        return (
+            [i.get('src') for i in images]
+            if len(images)
+            else self._external_images()
+        )
 
     def get_cover(self) -> str:
         pass

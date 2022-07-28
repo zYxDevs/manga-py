@@ -27,8 +27,9 @@ class TruyenTranhTuanCom(Provider, Std):
 
     def get_files(self):
         content = self.http_get(self.chapter)
-        items = self.re.search(r'slides_page_url_path\s*=\s*(\[.+\])[;,]?', content)
-        if items:
+        if items := self.re.search(
+            r'slides_page_url_path\s*=\s*(\[.+\])[;,]?', content
+        ):
             n = self.normalize_uri
             items = self.json.loads(items.group(1))
             return [n(i) for i in items]

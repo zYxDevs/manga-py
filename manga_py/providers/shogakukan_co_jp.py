@@ -18,7 +18,7 @@ class ShogakukanCoJp(ShogakukanTameshiyoMe, Std):
             'magazines/series',
             'books'
         ]
-        re = r'(/(?:{})/\d+)'.format('|'.join(types))
+        re = f"(/(?:{'|'.join(types)})/\d+)"
         url = self.re.search(re, self.get_url()).group(1)
         return self.http_get(self.domain + url)
 
@@ -29,10 +29,9 @@ class ShogakukanCoJp(ShogakukanTameshiyoMe, Std):
         return self._elements('a[href*="shogakukan.tameshiyo.me"]')  # todo: watch this
 
     def get_cover(self) -> str:
-        img = self._cover_from_content('.mainimg01')
-        if not img:
-            img = self._cover_from_content('.image01 > img', 'data-original')
-        return img
+        return self._cover_from_content('.mainimg01') or self._cover_from_content(
+            '.image01 > img', 'data-original'
+        )
 
     def book_meta(self) -> dict:
         # todo meta

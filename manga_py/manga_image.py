@@ -5,7 +5,7 @@ from typing import Tuple, Optional
 from PIL import Image as PilImage, ImageChops, ImageFile
 try:
     from PIL import UnidentifiedImageError
-except (ModuleNotFoundError, ImportError):
+except ImportError:
     UnidentifiedImageError = OSError
 
 
@@ -114,8 +114,7 @@ class MangaImage:
         )
         diff = ImageChops.difference(self.image, bg)
         diff = ImageChops.add(diff, diff, 2.0, -100)
-        bbox = diff.getbbox()
-        if bbox:
+        if bbox := diff.getbbox():
             crop = self.image.crop(bbox)
             if dest_path:
                 crop.save(dest_path)
@@ -128,9 +127,7 @@ class MangaImage:
         ext = imghdr.what(_path)
         if ext is None:
             ext = _pil_fmt(_path)
-        if ext is None:
-            return None
-        return '.%s' % ext
+        return None if ext is None else f'.{ext}'
 
     @staticmethod
     def is_image(_path) -> bool:

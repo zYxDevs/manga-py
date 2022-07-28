@@ -39,7 +39,7 @@ class Parser:
 
         if self.provider.allow_auto_change_url():
             if real_url != original_url:
-                warning('Manga url changed! New url: {}'.format(real_url))
+                warning(f'Manga url changed! New url: {real_url}')
             self.params['url'] = real_url
 
         self.provider.quiet = self.params.get('quiet', False)

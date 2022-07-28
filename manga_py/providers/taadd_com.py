@@ -16,11 +16,10 @@ class TaaddCom(Provider, Std):
         ]))
 
     def get_chapter_index(self) -> str:
-        idx = self.re.search('/chapter/([^/]+)/', self.chapter).group(1)
-        return idx
+        return self.re.search('/chapter/([^/]+)/', self.chapter).group(1)
 
     def get_content(self):
-        return self.http_get('{}/book/{}.html'.format(self.domain, self.manga_name))
+        return self.http_get(f'{self.domain}/book/{self.manga_name}.html')
 
     def _re_name(self, url):
         return self.re.search(r'/book/([^/]+)\.html', url)

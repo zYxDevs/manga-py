@@ -9,9 +9,11 @@ class ReadMngCom(Provider, Std):
     def get_chapter_index(self) -> str:
         ch = self.chapter
         idx = self._re.search(ch)
-        if not idx:
-            return self.re.search(r'\.\w{2,7}/[^/]+/([^/]+)', ch).group(1)
-        return '-'.join(idx.group(1).split('.'))
+        return (
+            '-'.join(idx.group(1).split('.'))
+            if idx
+            else self.re.search(r'\.\w{2,7}/[^/]+/([^/]+)', ch).group(1)
+        )
 
     def get_content(self):
         return self._get_content('{}/{}')
@@ -23,7 +25,7 @@ class ReadMngCom(Provider, Std):
         return self._elements('.chp_lst li > a')
 
     def get_files(self):
-        url = self.chapter + '/all-pages'
+        url = f'{self.chapter}/all-pages'
         parser = self.html_fromstring(url)
         return self._images_helper(parser, '.content-list img.img-responsive')
 

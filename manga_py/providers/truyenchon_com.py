@@ -10,9 +10,7 @@ class TruyenChonCom(Provider, Std):
         return re.search(self.chapter).group(1).replace('.', '-')
 
     def get_content(self):
-        truyen = 'truyen'
-        if ~self.domain.find('nettruyen.'):
-            truyen = 'truyen-tranh'
+        truyen = 'truyen-tranh' if ~self.domain.find('nettruyen.') else 'truyen'
         return self._get_content('{}/%s/{}' % truyen)
 
     def get_manga_name(self) -> str:

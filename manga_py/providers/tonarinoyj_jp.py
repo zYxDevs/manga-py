@@ -14,20 +14,17 @@ class TonariNoYjJp(Provider, Std):
 
     def get_content(self):
         content = self._storage.get('main_content', None)
-        if content is None:
-            return self.http_get(self.get_url())
-        return content
+        return self.http_get(self.get_url()) if content is None else content
 
     def get_manga_name(self) -> str:
-        h1 = self.document_fromstring(self.content, 'h1.series-header-title')
-        if h1:
+        if h1 := self.document_fromstring(self.content, 'h1.series-header-title'):
             return h1[0].text_content_full()
         return '__Manga__'
 
     def get_chapters(self):
         idx = self.re.search(r'/episode/(\d+)', self.get_url())
         items = self.helper.get_chapters(idx.group(1))
-        return ['{}/episode/{}'.format(self.domain, i) for i in items]
+        return [f'{self.domain}/episode/{i}' for i in items]
 
     def get_files(self):
         doc = self.html_fromstring(self.chapter)

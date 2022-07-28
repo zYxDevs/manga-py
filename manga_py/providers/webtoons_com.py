@@ -23,7 +23,7 @@ class WebToonsCom(Provider, Std):
     def get_manga_name(self) -> str:
         self.__titleNo = self._get_name(r'title_no=(\d+)')
         name = self._get_name(r'\.\w{2,7}/([^/]+/[^/]+/[^/]+)')
-        self.__mainUrl = '{}/{}/list?title_no={}'.format(self.domain, name, self.__titleNo)
+        self.__mainUrl = f'{self.domain}/{name}/list?title_no={self.__titleNo}'
         return self._get_name(r'\.\w{2,7}/[^/]+/[^/]+/([^/]+)')
 
     def _chapters(self, content):

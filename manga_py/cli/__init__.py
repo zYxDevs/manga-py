@@ -86,11 +86,7 @@ class Cli:  # pragma: no cover
         self._progress(items_count, current_item, re_init)
 
     def _progress(self, items_count: int, current_item: int, re_init: bool = False):
-        current_val = 0
-
-        if self.__progress_bar:
-            current_val = self.__progress_bar.value
-
+        current_val = self.__progress_bar.value if self.__progress_bar else 0
         self.__init_progress(items_count, re_init and current_val > 0)
         self.__progress_bar.update(current_item)
 

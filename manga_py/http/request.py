@@ -34,17 +34,14 @@ class Request:
         return headers
 
     def _get_cookies(self, cookies=None):
-        return cookies if cookies else self.cookies
+        return cookies or self.cookies
 
     def _prepare_redirect_base_url(self, url):
         if not self.__redirect_base_url:
             self.__redirect_base_url = url
 
     def _get_kwargs(self):
-        kwargs = {}
-        if self.kwargs:
-            kwargs = self.kwargs
-        return kwargs
+        return self.kwargs or {}
 
     def __update_cookies(self, r):
         _ = r.cookies.get_dict()

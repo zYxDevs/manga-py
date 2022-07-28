@@ -25,7 +25,7 @@ class MangaMexatCom(Provider, Std):
         pages = self._first_select_options(parser, '#manga_pid', True)
         images = self._get_img(parser)
         for p in pages:
-            url = self.chapter + '?pid=' + p.get('value')
+            url = f'{self.chapter}?pid=' + p.get('value')
             parser = self.html_fromstring(url)
             images += self._get_img(parser)
         return images

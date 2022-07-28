@@ -9,17 +9,13 @@ class NightowNet(Provider, Std):
 
     def get_chapter_index(self) -> str:
         ch = unquote_plus(self.chapter)
-        idx = self.re.search(r'chapter=(?:.+?)\+(\d+(?:\.\d+)?)', ch)
-        if idx:
+        if idx := self.re.search(r'chapter=(?:.+?)\+(\d+(?:\.\d+)?)', ch):
             return '-'.join(idx.group(1).split('.'))
         return self.re.search('chapter=(.+?)(?:&.+)?$', ch).group(1)
 
     def get_content(self):
         name = self._get_name(self._name_re)
-        return self.http_get('{}/online/?manga={}'.format(
-            self.domain,
-            name
-        ))
+        return self.http_get(f'{self.domain}/online/?manga={name}')
 
     def get_manga_name(self) -> str:
         return unquote_plus(self._get_name(self._name_re))
@@ -28,7 +24,7 @@ class NightowNet(Provider, Std):
         return self._elements('.selector .options a')
 
     def prepare_cookies(self):
-        self._storage['referer'] = self.domain + '/online/'
+        self._storage['referer'] = f'{self.domain}/online/'
 
     def get_files(self):
         content = self.http_get(self.chapter)

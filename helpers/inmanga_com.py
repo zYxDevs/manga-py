@@ -16,7 +16,7 @@ while n < 10:
 if not all_manga_list:
     print('Error! QSMangaList is not correct json?')
 
+_str = 'cd {}; python3 manga.py --cli -i -u http://inmanga.com/ver/manga/{}/{}'
 for i in all_manga_list:
-    print('Downloading %s' % i['Name'])
-    _str = 'cd {}; python3 manga.py --cli -i -u http://inmanga.com/ver/manga/{}/{}'
+    print(f"Downloading {i['Name']}")
     system(_str.format(_path, i['Name'], i['Name'], i['Identification']))

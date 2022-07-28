@@ -19,10 +19,7 @@ class _Template(Provider, Std):
         parser = self.html_fromstring(self.chapter, '#arraydata', 0)
         content = self.element_text_content_full(parser)
 
-        if content is None:
-            return []
-
-        return content.split(',')
+        return [] if content is None else content.split(',')
 
     def get_cover(self) -> str:
         return self._cover_from_content('.imgdesc > img')

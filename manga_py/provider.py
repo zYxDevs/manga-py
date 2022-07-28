@@ -132,7 +132,7 @@ class Provider(Base, Abstract, Static, Callbacks, ArchiveName, ABC):
         self.prepare_cf(self.get_url())
         self.prepare_cookies()
 
-        info('Manga name: %s' % self.manga_name)
+        info(f'Manga name: {self.manga_name}')
         info('Content length %d' % len(self.content))
         self.chapters = self._prepare_chapters(self.get_chapters())
         info('Chapters received (%d)' % len(self.chapters))
@@ -166,7 +166,7 @@ class Provider(Base, Abstract, Static, Callbacks, ArchiveName, ABC):
         _min = self._params.get('skip_volumes', 0)
         _max = self._params.get('max_volumes', 0)
         # Beware, 0 can also come from command line param
-        _max = _max if _max else nb_chapters
+        _max = _max or nb_chapters
         _max = min(nb_chapters, _max + _min)
         self.chapters_count = _max - _min
         return _min, _max
@@ -231,7 +231,8 @@ class Provider(Base, Abstract, Static, Callbacks, ArchiveName, ABC):
 
     def get_archive_path(self) -> Tuple[str, str]:
         if self._override_name:
-            _path = "{}_{}".format(self._override_name, str(self.normal_arc_name(self.get_chapter_index().split('-'))))
+            _path = f"{self._override_name}_{str(self.normal_arc_name(self.get_chapter_index().split('-')))}"
+
         else:
             # see Std
             _path = remove_file_query_params(self.get_archive_name())
@@ -249,7 +250,7 @@ class Provider(Base, Abstract, Static, Callbacks, ArchiveName, ABC):
         # Manga online biz use this naming scheme (see http2). Not sure if wanted
         # arc_name =  '{:0>3}-{}'.format(idx, self.get_archive_name())
         # If we want to keep it, maybe instead override self.get_archive_name ?
-        arc_name = '%s%s' % (_path, additional_data_name)
+        arc_name = f'{_path}{additional_data_name}'
 
         return (
             path_join(
@@ -304,23 +305,27 @@ class Provider(Base, Abstract, Static, Callbacks, ArchiveName, ABC):
 
     def __save_params(self, params):
         # issue 400
-        if params.get('auto_skip_deleted', False):
-            with open(self.auto_params_file, 'r') as r:
-                try:
-                    data = json.loads(r.read())
-                except:
-                    data = {}
-            with open(self.auto_params_file, 'w') as w:
-                try:
-                    _params = {}
-                    for k in params:
-                        if k not in ['_raw_params', 'auto_skip_deleted'] and params[k] is not None:
-                            _params[k] = params[k]
-                    _params['skip_volumes'] = self._state.get('chapter_index', 0)
-                    data[self.auto_params_key] = _params
-                    w.write(json.dumps(data))
-                except:
-                    self.log('Error of automatic save parameters')
+        if not params.get('auto_skip_deleted', False):
+            return
+        with open(self.auto_params_file, 'r') as r:
+            try:
+                data = json.loads(r.read())
+            except:
+                data = {}
+        with open(self.auto_params_file, 'w') as w:
+            try:
+                _params = {
+                    k: params[k]
+                    for k in params
+                    if k not in ['_raw_params', 'auto_skip_deleted']
+                    and params[k] is not None
+                }
+
+                _params['skip_volumes'] = self._state.get('chapter_index', 0)
+                data[self.auto_params_key] = _params
+                w.write(json.dumps(data))
+            except:
+                self.log('Error of automatic save parameters')
 
     @property
     def auto_params_file(self) -> str:
@@ -332,10 +337,7 @@ class Provider(Base, Abstract, Static, Callbacks, ArchiveName, ABC):
 
     @property
     def auto_params_key(self) -> str:
-        return '{}|{}'.format(
-            self.domain,
-            self.manga_name,
-        )
+        return f'{self.domain}|{self.manga_name}'
 
     # region specified data for eduhoribe/comic-builder (see https://github.com/manga-py/manga-py/issues/347)
 

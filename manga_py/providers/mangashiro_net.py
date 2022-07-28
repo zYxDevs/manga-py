@@ -18,8 +18,8 @@ class MangaShiroNet(Provider, Std):
 
     def get_manga_name(self) -> str:
         url = self.get_url()
-        if ~url.find('/%s/' % self._main_prefix):
-            re = ('/%s/([^/]+)' % self._main_prefix)
+        if ~url.find(f'/{self._main_prefix}/'):
+            re = f'/{self._main_prefix}/([^/]+)'
         else:
             re = self.alter_re_name
         return self.re.search(re, url).group(1)

@@ -12,7 +12,7 @@ class HentaiHereCom(Provider, Std):
 
     def get_content(self):
         url = self.re.search('(/m/[^/]+)', self.get_url())
-        url = '{}{}'.format(self.domain, url.group(1))
+        url = f'{self.domain}{url.group(1)}'
         return self.http_get(url)
 
     def get_manga_name(self) -> str:

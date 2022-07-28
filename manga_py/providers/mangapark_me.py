@@ -7,9 +7,7 @@ class MangaParkMe(Provider, Std):
     def get_chapter_index(self) -> str:
         selector = r'/manga/[^/]+/[^/]+(?:/v(\d+))?/c(\d+[^/]*)'
         idx = self.re.search(selector, self.chapter).groups()
-        if idx[0] is None:
-            return '0-' + idx[1]
-        return '-'.join(idx)
+        return f'0-{idx[1]}' if idx[0] is None else '-'.join(idx)
 
     def get_content(self):
         return self._get_content('{}/manga/{}')

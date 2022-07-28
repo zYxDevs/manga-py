@@ -37,7 +37,7 @@ class TestStd(unittest.TestCase):
         provider = self._provider
         self.assertTrue(provider.get_manga_name() == provider.manga_name)
         self.assertNotIn('manga_name', provider._storage)
-        provider._storage['manga_name'] = provider.get_manga_name() + '-name'
+        provider._storage['manga_name'] = f'{provider.get_manga_name()}-name'
         self.assertFalse(provider.get_manga_name() == provider.manga_name)
         self.assertTrue(~provider.manga_name.find('imghp'))
         provider._storage['manga_name'] = provider.get_manga_name()

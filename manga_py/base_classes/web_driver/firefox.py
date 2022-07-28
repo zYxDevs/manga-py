@@ -18,7 +18,7 @@ class FirefoxDriver(WebDriver):
     _arc = 'geckodriver-{ver}-{os}.{ext}'
 
     def __init__(self, version: str = None):
-        super().__init__(('v%s' % (version or '0.26.0').lstrip('v')), compile(r'(.+)/'))
+        super().__init__(f"v{(version or '0.26.0').lstrip('v')}", compile(r'(.+)/'))
 
     def driver_archive(self) -> str:
         if _is_linux():
@@ -36,11 +36,7 @@ class FirefoxDriver(WebDriver):
         return self.home_path.joinpath(_driver)
 
     def download_driver(self) -> None:
-        driver = 'driver'
-        if _is_win():
-            driver += '.zip'
-        else:
-            driver += '.tgz'
+        driver = 'driver' + ('.zip' if _is_win() else '.tgz')
         path = str(self.home_path.joinpath(driver))
 
         with open(path, 'wb') as _driver:
@@ -73,7 +69,9 @@ class FirefoxDriver(WebDriver):
 
     def get_available_versions(self) -> set:
         content = json.loads(get(self.url_api).text)
-        return {i['tag_name'][1:] for i in content if 'master' == i['target_commitish']}
+        return {
+            i['tag_name'][1:] for i in content if i['target_commitish'] == 'master'
+        }
 
 
 __all__ = ['FirefoxDriver']

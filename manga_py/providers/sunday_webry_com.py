@@ -35,17 +35,17 @@ class SundayWebryCom(Provider, Std):
 
     def _prepare_urls(self):
         cid = self.re.search('cid=([^&]+)', self.chapter).group(1)
-        license_url = '{}/api4js/contents/license?cid={}'.format(self.domain, cid)
+        license_url = f'{self.domain}/api4js/contents/license?cid={cid}'
         with self.http().get(license_url) as resp:
             self.cdn_url = resp.json().get('url', None)
-        with self.http().get(self.cdn_url + 'configuration_pack.json') as resp:
+        with self.http().get(f'{self.cdn_url}configuration_pack.json') as resp:
             items = resp.json()
         return items.get('configuration', {}).get('contents', [])
 
     def get_files(self):
         items = []
         for i in self._prepare_urls():
-            file = '%s/0.jpeg' % i.get('file')
+            file = f"{i.get('file')}/0.jpeg"
             items.append(self.cdn_url + file)
         return items
 

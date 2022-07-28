@@ -52,10 +52,7 @@ class Base(ProviderParams):
         self._http_kwargs = {}
 
     def _archive_type(self) -> str:
-        arc_type = 'zip'
-        if self._params['cbz']:
-            arc_type = 'cbz'
-        return arc_type
+        return 'cbz' if self._params['cbz'] else 'zip'
 
     def get_url(self):
         return self._params['url']
@@ -81,7 +78,7 @@ class Base(ProviderParams):
             return self.http_normal(new, params)
 
     def flare_solver_http(self, new=False, params=None) -> FS_Http:
-        allow_webp = True == (params or {}).get('no_webp', False)
+        allow_webp = (params or {}).get('no_webp', False) == True
         headers = {}
         if allow_webp:
             headers['Accept'] = Http.webp_header
@@ -97,8 +94,7 @@ class Base(ProviderParams):
     def http_normal(self, new=False, params=None) -> Http:
         http_params = self._build_http_params(params)
         if new:
-            http = Http(**http_params)
-            return http
+            return Http(**http_params)
 
         if self.__http is None:
             self.__http = Http(**http_params)
@@ -110,12 +106,11 @@ class Base(ProviderParams):
         with http.get(url=url, headers=headers, cookies=cookies) as resp:
             if type(http) == Http:
                 return resp.text
-            else:
-                content = resp.json().get('solution', {}).get('response', b'')
-                try:
-                    return content.decode()
-                except AttributeError:
-                    return content
+            content = resp.json().get('solution', {}).get('response', b'')
+            try:
+                return content.decode()
+            except AttributeError:
+                return content
 
     def http_post(self, url: str, headers: dict = None, cookies: dict = None, data=()):
         http = self.http()
@@ -132,9 +127,7 @@ class Base(ProviderParams):
     def __normalize_chapters(cls, n, element):
         if isinstance(element, HtmlElement):
             return n(element.get('href'))
-        if isinstance(element, str):
-            return n(element)
-        return element
+        return n(element) if isinstance(element, str) else element
 
     def _prepare_chapters(self, chapters):
         n = self.normalize_uri
@@ -144,7 +137,7 @@ class Base(ProviderParams):
                 url = self.__normalize_chapters(n, i)
                 items.append(url)
         else:
-            warning('Chapters list empty. Check %s' % self.get_url())
+            warning(f'Chapters list empty. Check {self.get_url()}')
         return items
 
     def book_meta(self) -> dict:
@@ -181,9 +174,7 @@ class Base(ProviderParams):
                 self.__arguments[key] = value
 
     def arg(self, key: str) -> Optional[str]:
-        if self.__arguments is None:
-            return None
-        return self.__arguments.get(key)
+        return None if self.__arguments is None else self.__arguments.get(key)
 
     def allow_auto_change_url(self):
         return True

@@ -31,36 +31,27 @@ class ReMangaOrg(Provider, Std):
         ) as resp:
             data = resp.json()
 
-        paid_chapters = len([ch for ch in data['content'] if ch['is_paid']])
-        if paid_chapters:
+        if paid_chapters := len([ch for ch in data['content'] if ch['is_paid']]):
             self.log('Found %d paid chapters. Please, check site on your browser' % paid_chapters)
 
         return [ch for ch in data['content'] if not ch['is_paid']]
 
     def _api_url(self, sub_url: str):
-        return '{}{}'.format(
-            self.content['apiUrl'].rstrip('/'),
-            sub_url
-        )
+        return f"{self.content['apiUrl'].rstrip('/')}{sub_url}"
 
     def get_files(self):
         try:
-            with self.http().get(
-                self._api_url('/titles/chapters/{}'.format(
-                    self.chapter['id']
-                ))
-            ) as resp:
+            with self.http().get(self._api_url(f"/titles/chapters/{self.chapter['id']}")) as resp:
                 pages = resp.json().get('content', {}).get('pages', [])
                 if len(pages) == 0:
                     warning('Pages list has empty')
                     return []
 
-                if type(pages[0]) == list:
-                    images = list(itertools.chain(
-                        *pages
-                    ))
-                else:
-                    images = pages
+                images = (
+                    list(itertools.chain(*pages))
+                    if type(pages[0]) == list
+                    else pages
+                )
 
             return [img['link'] for img in images]
 

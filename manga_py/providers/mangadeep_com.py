@@ -19,15 +19,13 @@ class MangaDeepCom(MangaOnlineToday, Std):
     def get_chapters(self):
         selector = 'ul.lst a.lst'
         items = self.document_fromstring(self.content, selector)
-        pages = self.document_fromstring(self.content, '.pgg li > a')
-        if pages:
+        if pages := self.document_fromstring(self.content, '.pgg li > a'):
             idx = self.re.search(r'-list/(\d+)', pages[-1].get('href'))
             for i in range(1, int(idx.group(1))):
-                content = self.http_get('{}/{}/chapter-list/{}/'.format(
-                    self.domain,
-                    self.manga_name,
-                    i + 1
-                ))
+                content = self.http_get(
+                    f'{self.domain}/{self.manga_name}/chapter-list/{i + 1}/'
+                )
+
                 items += self.document_fromstring(content, selector)
         return items
 

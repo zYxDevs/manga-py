@@ -11,7 +11,7 @@ class MangaMewCom(Provider, Std):
 
     def get_content(self):
         url = self.get_url()
-        if url.find('/' + self._type + '/') == -1:  # not found
+        if url.find(f'/{self._type}/') == -1:  # not found
             a = self.html_fromstring(url, 'h1.name a', 0)
             url = a.get('href')
         return self.http_get(url)

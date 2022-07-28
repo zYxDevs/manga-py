@@ -15,8 +15,7 @@ class GMangaMe(GoMangaCo):
         return r'1:\salphanumSort\((\[.+\])\)'
 
     def get_cover(self) -> str:
-        image = self.re.search(r'"image"\s?:\s?"(.+)",', self.content)
-        if image:
+        if image := self.re.search(r'"image"\s?:\s?"(.+)",', self.content):
             return image.group(1)
 
 

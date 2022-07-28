@@ -19,7 +19,7 @@ class ComicWebNewTypeCom(Provider, Std):
 
     def get_files(self):
         url = self.chapter
-        with self.http().get(url + 'json/', headers={'x-requested-with': 'XMLHttpRequest'}) as req:
+        with self.http().get(f'{url}json/', headers={'x-requested-with': 'XMLHttpRequest'}) as req:
             images = [self.re.sub(r'jpg.+', 'jpg', img) for img in req.json()]
         return images
 

@@ -8,7 +8,7 @@ from manga_py.meta import version, repo_name
 
 
 def check_version():
-    api_url = 'https://api.github.com/repos/' + repo_name + '/releases/latest'
+    api_url = f'https://api.github.com/repos/{repo_name}/releases/latest'
     api_content = json.loads(get(api_url).text)
     tag_name = api_content.get('tag_name', None)
     if tag_name and version.parse(tag_name) > version.parse(version):

@@ -11,5 +11,5 @@ root_path = path.join(path.dirname(path.realpath(__file__)), 'tests')
 
 
 if __name__ == '__main__':
-    fs.make_dirs(root_path + '/temp')
+    fs.make_dirs(f'{root_path}/temp')
     unittest.main()

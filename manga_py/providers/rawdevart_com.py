@@ -17,7 +17,7 @@ class RawDevArtCom(Provider, Std):
         chapters += self._elements('.list-group-item > a', self.content)
 
         for page in self.pages():
-            url = '{}/comic/{}/?page={}'.format(self.domain, self.manga_name, page)
+            url = f'{self.domain}/comic/{self.manga_name}/?page={page}'
             chapters += self._elements('.list-group-item > a', self.http_get(url))
 
         return chapters

@@ -15,10 +15,10 @@ class HitomiLa(HentaiFoxCom):
 
     def get_files(self):
         idx = self._get_name(self._idx_re)
-        url = 'http://ltn.hitomi.la/galleries/{}.js'.format(idx)
+        url = f'http://ltn.hitomi.la/galleries/{idx}.js'
         images = self.re.search(r'(\[.+\])', self.http_get(url))
         images = self.json.loads(images.group(1))
-        p = '{}{}/'.format(self._cdn, idx)
+        p = f'{self._cdn}{idx}/'
         return [p + i.get('name') for i in images]
 
 

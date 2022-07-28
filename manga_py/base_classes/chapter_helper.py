@@ -8,8 +8,4 @@ class ChapterHelper:
             self.chapters = self.chapters.split(' ')
 
     def get_chapters(self, urls):
-        chapters = []
-        for i, url in enumerate(urls):
-            if i in self.chapters:
-                chapters.append(urls)
-        return chapters
+        return [urls for i, url in enumerate(urls) if i in self.chapters]

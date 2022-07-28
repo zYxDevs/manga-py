@@ -8,14 +8,10 @@ class DanbooruDonmaiUs(Provider, Std):
     _manga_name = None
 
     def get_archive_name(self) -> str:
-        if self.chapter:
-            return 'page_{:0>2}'.format(self.chapter)
-        return 'archive'
+        return 'page_{:0>2}'.format(self.chapter) if self.chapter else 'archive'
 
     def get_chapter_index(self) -> str:
-        if self.chapter:
-            return str(self.chapter)
-        return '0'
+        return str(self.chapter) if self.chapter else '0'
 
     def get_content(self):
         return self.http_get(self.get_url())
@@ -33,12 +29,14 @@ class DanbooruDonmaiUs(Provider, Std):
             pages = self._elements('.paginator .current-page > span')
             images_on_page = len(self._elements('#posts > div > article'))
             if pages:
-                count = self.html_fromstring('{}/counts/posts?tags={}'.format(
-                    self.domain,
-                    self.manga_name,
-                ), '#a-posts', 0).text_content_full()
+                count = self.html_fromstring(
+                    f'{self.domain}/counts/posts?tags={self.manga_name}',
+                    '#a-posts',
+                    0,
+                ).text_content_full()
+
                 page = self.re.search(r'\n\s+(\d+)', count).group(1)
-                max_page = int(int(page) / images_on_page) + 1
+                max_page = int(page) // images_on_page + 1
                 if max_page > 1001:
                     self.log('1000 pages maximum!')
                     max_page = 1000
@@ -46,11 +44,7 @@ class DanbooruDonmaiUs(Provider, Std):
         return [1]
 
     def _tag_images(self):  # pragma: no cover
-        url = '{}/posts?tags={}&page={}'.format(
-            self.domain,
-            self._manga_name,
-            self.chapter,
-        )
+        url = f'{self.domain}/posts?tags={self._manga_name}&page={self.chapter}'
         parser = self.html_fromstring(url, '#posts article a')
         n = self.normalize_uri
         images = []
@@ -59,20 +53,14 @@ class DanbooruDonmaiUs(Provider, Std):
         return images
 
     def _post_image(self, url):  # pragma: no cover
-        if isinstance(url, str):
-            parser = self.html_fromstring(url)
-        else:
-            parser = url
-
-        full_size = parser.cssselect('#image-resize-notice a')
-        if full_size:
+        parser = self.html_fromstring(url) if isinstance(url, str) else url
+        if full_size := parser.cssselect('#image-resize-notice a'):
             return [full_size[0].get('href')]
         return [parser.cssselect('#image')[0].get('src')]
 
     def _post_images(self, url):  # pragma: no cover
         parser = self.html_fromstring(url)
-        links = parser.cssselect('#has-parent-relationship-preview article a')
-        if links:
+        if links := parser.cssselect('#has-parent-relationship-preview article a'):
             images = []
             n = self.normalize_uri
             for i in links:

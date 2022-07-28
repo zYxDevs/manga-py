@@ -13,11 +13,8 @@ class AutoProxy:
         td = item.cssselect('td')
         proxy = self.__strip(td[4])  # proxy type
         https = self.__strip(td[6])  # https (yes|no)
-        if (
-                proxy == 'anonymous'
-                or proxy == 'elite proxy'
-        ) and https == 'yes':
-            return self.__strip(td[0]) + ':' + self.__strip(td[1])
+        if proxy in ['anonymous', 'elite proxy'] and https == 'yes':
+            return f'{self.__strip(td[0])}:{self.__strip(td[1])}'
         return None
 
     def _test_proxy(self, url):
@@ -40,7 +37,7 @@ class AutoProxy:
         url = 'https://www.us-proxy.org'
         items = document_fromstring(requests.get(url).text)
         items = items.cssselect('#proxylisttable tbody tr')
-        for n, i in enumerate(items):
+        for i in items:
             proxy = self._s(i)
             test = False
             if proxy:

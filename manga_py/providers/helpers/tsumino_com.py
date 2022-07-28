@@ -19,10 +19,14 @@ class TsuminoCom:
 
         g_token = self.provider.html_fromstring(src).cssselect('#recaptcha-token')
         session = Session()
-        h = session.post('{}/Read/AuthProcess'.format(self.provider.domain), data={
-            'g-recaptcha-response': g_token[0].get('value'),
-            'Id': 1,
-            'Page': 1,
-        })
+        h = session.post(
+            f'{self.provider.domain}/Read/AuthProcess',
+            data={
+                'g-recaptcha-response': g_token[0].get('value'),
+                'Id': 1,
+                'Page': 1,
+            },
+        )
+
         session.close()
         return h.cookies

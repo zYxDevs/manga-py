@@ -138,9 +138,7 @@ class WebDriver(metaclass=ABCMeta):
             'secure': False,
             'path': '/',
             'httpOnly': False,
-        }
-
-        _cookie.update(kwargs)
+        } | kwargs
 
         self._driver.add_cookie(_cookie)
 

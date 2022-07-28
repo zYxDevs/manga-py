@@ -107,9 +107,7 @@ class ComicInfo:
             size = page.size or 0
 
             lines.append(f'    <Page Image="{idx}" ImageSize="{size}"{_data}/>')
-        lines.append('    </Pages>')
-        lines.append('</ComicInfo>')
-
+        lines.extend(('    </Pages>', '</ComicInfo>'))
         return '\n'.join(lines)
 
     def title(self, value: str):

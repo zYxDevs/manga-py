@@ -28,10 +28,7 @@ class MangaWindowNet(Provider, Std):
         for i in items:
             text = i.cssselect('b')[0].text_content_full()
             if 'deleted' not in text.casefold():
-                result.append((
-                    re.search(text).group(1),
-                    n(i.get('href')),
-                ))
+                result.append((re.search(text)[1], n(i.get('href'))))
         return result
 
     def get_files(self):

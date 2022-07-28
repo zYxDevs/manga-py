@@ -18,8 +18,7 @@ class MangaTailCom(Provider, Std):
         _re = r'.+?[^\d](\d+(?:\.\d+)?)'
         if ~chapter.find('-fixed'):
             _re = r'.+?[^\d](\d+(?:\.\d+)?).+fixed'
-        re = self.re.search(_re, chapter, self.re.I)
-        if re:
+        if re := self.re.search(_re, chapter, self.re.I):
             return re.group(1)
         return chapter
 
@@ -32,8 +31,7 @@ class MangaTailCom(Provider, Std):
     def get_manga_name(self) -> str:
         selector = '.main-content-inner .page-header'
         header = self.html_fromstring(self.get_url(), selector, 0)
-        link = header.cssselect('a.active + a')
-        if link:
+        if link := header.cssselect('a.active + a'):
             link = self.normalize_uri(link.get('href'))
             self.__local_storage = link
             header = self.html_fromstring(link, selector, 0)
@@ -68,7 +66,7 @@ class MangaTailCom(Provider, Std):
 
     def get_files(self):
         url = self.chapter[1]
-        items = self.html_fromstring('{}{}'.format(url, '?page=all'), '#images img')
+        items = self.html_fromstring(f'{url}?page=all', '#images img')
         n = self.normalize_uri
         return [n(i.get('src')) for i in items]
 

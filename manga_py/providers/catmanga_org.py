@@ -20,22 +20,20 @@ class CatMangaOrg(Provider, Std):
 
     def get_content(self):
         url = self.re.search(r'(https?://.+?/series/[^/]+)', self.get_url()).group(1)
-        data = self.json.loads(
+        return self.json.loads(
             self.re.search(
                 r'>(\{"(?:query|props|page|buildId|isFallback|gsp)"\:\{.+?\})<',
                 self.http_get(url),
-                self.re.MULTILINE).group(1),
+                self.re.MULTILINE,
+            ).group(1),
         )
-        return data
 
     def _url_manga_name(self):
         return self._get_name(r'/series/([^/]+)')
 
     def get_manga_name(self) -> str:
         titles = self._content.get('alt_titles', [])
-        if len(titles) > 0:
-            return titles[0]
-        return self._url_manga_name()
+        return titles[0] if len(titles) > 0 else self._url_manga_name()
 
     def get_chapters(self):
         return self._content.get('chapters', [])[::-1]
@@ -59,9 +57,7 @@ class CatMangaOrg(Provider, Std):
         number = self.chapter.get('number')
         volume = self.chapter.get('volume')
 
-        if volume is not None:
-            return f'{number}-{volume}'
-        return str(number)
+        return f'{number}-{volume}' if volume is not None else str(number)
 
 
 main = CatMangaOrg

@@ -15,8 +15,8 @@ while n < 10:
         pass
     n += 1
 
+_str = 'cd {}; python3 manga.py --cli -i -u {}'
 for i in all_manga_list:
     href = i.get('href')
-    print('Downloading %s' % href)
-    _str = 'cd {}; python3 manga.py --cli -i -u {}'
+    print(f'Downloading {href}')
     system(_str.format(_path, href))

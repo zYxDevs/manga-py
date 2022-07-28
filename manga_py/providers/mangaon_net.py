@@ -7,10 +7,7 @@ class MangaOnNet(Provider, Std):
 
     def get_archive_name(self) -> str:
         idx = self.get_chapter_index().split('-')
-        if self.__has_ch:
-            var = {'vol': idx[0], 'ch': idx[1]}
-        else:
-            var = {'vol': idx}
+        var = {'vol': idx[0], 'ch': idx[1]} if self.__has_ch else {'vol': idx}
         return self.normal_arc_name(var)
 
     def get_chapter_index(self) -> str:
@@ -20,16 +17,13 @@ class MangaOnNet(Provider, Std):
         if re:
             self.__has_ch = True
             re = re.groups()
-            return '{}-{}'.format(
-                0 if not re[0] else re[0],
-                re[1]
-            )
+            return f'{re[0] or 0}-{re[1]}'
         selector = r'.+-(\d+)'
         re = self.re.search(selector, ch)
-        return '0-{}'.format(re.group(1))
+        return f'0-{re.group(1)}'
 
     def get_content(self):
-        url = '{}/manga-info/{}'.format(self.domain, self.manga_name)
+        url = f'{self.domain}/manga-info/{self.manga_name}'
         return self.http_get(url)
 
     def get_manga_name(self) -> str:

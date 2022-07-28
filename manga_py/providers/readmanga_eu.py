@@ -10,7 +10,7 @@ class ReadMangaEu(Provider, Std):
 
     def get_content(self):
         name = self._get_name('/(manga/\d+/[^/]+)')
-        return self.http_get('{}/{}'.format(self.domain, name))
+        return self.http_get(f'{self.domain}/{name}')
 
     def get_manga_name(self) -> str:
         return self._get_name('/manga/\d+/([^/]+)')

@@ -18,7 +18,7 @@ class MangaZukiMe(Provider, Std):
         return self._get_content('{}%s{}' % self._prefix)
 
     def get_manga_name(self) -> str:
-        return self._get_name('%s([^/]+)' % self._prefix)
+        return self._get_name(f'{self._prefix}([^/]+)')
 
     def get_chapters(self):
         chapters = []
@@ -26,7 +26,7 @@ class MangaZukiMe(Provider, Std):
         re = self.re.compile(r'(.+?)(?:\?style=list)?(?:/)?$')
         for ch in self._elements('.wp-manga-chapter > a'):
             href = re.search(ch.get('href')).group(1)
-            chapters.append(n(href) + '?style=list')
+            chapters.append(f'{n(href)}?style=list')
         return chapters
 
     def get_files(self):

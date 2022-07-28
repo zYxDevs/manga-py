@@ -23,9 +23,8 @@ class ReadComicOnlineTo(Provider, Std):
         self.http().cookies['rco_quality'] = 'hq'
 
     def get_files(self):
-        content = self.http_get(self.chapter + '&readType=1')
-        items = self.re.findall(r'lstImages.push\("([^"]+)"\)', content)
-        return items
+        content = self.http_get(f'{self.chapter}&readType=1')
+        return self.re.findall(r'lstImages.push\("([^"]+)"\)', content)
 
     def get_cover(self):
         return self._cover_from_content('.rightBox .barContent img[width]')

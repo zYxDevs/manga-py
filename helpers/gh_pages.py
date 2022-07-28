@@ -47,20 +47,13 @@ def clean(providers):
     _list = {}
     for i in providers:
         _ = i.find('/')
-        if not ~_:
-            _ = i.strip('()')
-        else:
-            _ = i[:_].strip('()')
+        _ = i[:_].strip('()') if ~_ else i.strip('()')
         _list['http://' + _.replace(r'\.', '.').replace(r'\d+', '&lt;d&gt;')] = ''
     return list(_list.keys())
 
 
 def aggregate(providers):
-    _list = []
-    for i in providers:
-        if i not in _start_items:
-            _list.append([i, 1, ''])
-    return _list
+    return [[i, 1, ''] for i in providers if i not in _start_items]
 
 
 def prepare_html(html):
@@ -68,7 +61,7 @@ def prepare_html(html):
         content = r.read()
     with open(html, 'w') as w:
         content = content.replace('__repo_name__', repo_name)
-        today = datetime.today()
+        today = datetime.now()
         content = content.replace('__last_update__', '{}/{:0>2}/{:0>2} {:0>2}-{:0>2}-{:0>2}'.format(
             today.year, today.month, today.day, today.hour, today.minute, today.second
         ))
@@ -82,10 +75,10 @@ def build_providers():
 
 
 def main():
-    path = root_path() + '/helpers/gh_pages_content/'
-    with open(path + 'providers.json', 'w') as w:
+    path = f'{root_path()}/helpers/gh_pages_content/'
+    with open(f'{path}providers.json', 'w') as w:
         w.write(build_providers())
-    prepare_html(path + 'index.html')
+    prepare_html(f'{path}index.html')
 
 
 # print(len(build_providers()))

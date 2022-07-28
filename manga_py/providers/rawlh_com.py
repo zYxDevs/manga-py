@@ -11,9 +11,7 @@ class RawLHCom(Provider, Std):
 
     def get_content(self):
         content = self._storage.get('main_content', None)
-        if content is not None:
-            return content
-        return self.http_get(self._root_uri)
+        return content if content is not None else self.http_get(self._root_uri)
 
     def get_manga_name(self) -> str:
         url = self.get_url()

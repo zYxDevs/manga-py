@@ -37,11 +37,8 @@ class ManhuaTaiCom(Provider, Std):
 
     @staticmethod
     def _decode_img_path(page_id, img_path):
-        result = ''
         pid = int(page_id) % 10
-        for i in img_path:
-            result += chr(ord(i) - pid)
-        return result
+        return ''.join(chr(ord(i) - pid) for i in img_path)
 
     def get_server(self):
         idx = randrange(0, len(self.servers))
@@ -57,15 +54,10 @@ class ManhuaTaiCom(Provider, Std):
 
         imgpath = self._decode_img_path(pageid, imgpath)
 
-        items = []
-        for i in range(int(startimg), int(totalimg) + 1):
-            items.append('{}/comic/{}{}.jpg{}'.format(
-                self.get_server(),
-                imgpath,
-                i,
-                comic_size
-            ))
-        return items
+        return [
+            f'{self.get_server()}/comic/{imgpath}{i}.jpg{comic_size}'
+            for i in range(int(startimg), int(totalimg) + 1)
+        ]
 
     def get_cover(self) -> str:
         return self._cover_from_content('.comic-cover > img')

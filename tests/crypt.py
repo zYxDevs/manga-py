@@ -57,8 +57,8 @@ class TestCrypt(unittest.TestCase):
         path = str(Path(root_path).joinpath('files', 'manhuagui'))
         with open(path, 'r') as f:
             js = re.search(r'\](\(function\(.+\))\s?<', f.read())
-            data = lib.decrypt(js.group(1), '')
-            js = re.search(r'\(({.+})\)', data).group(1)
+            data = lib.decrypt(js[1], '')
+            js = re.search(r'\(({.+})\)', data)[1]
             js = json.loads(js)
         self.assertIsInstance(js, dict)
         self.assertTrue(isinstance(js, dict))

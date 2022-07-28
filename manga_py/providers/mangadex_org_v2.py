@@ -73,14 +73,13 @@ class MangaDexOrg(Provider, Std):
         code = self.chapter['attributes']['translatedLanguage']
 
         translator = self._translators(self.chapter)
-        translator_name = ''
-        if len(translator) == 1:
-            translator_name = translator[0] + '-'
-
-        return '{}-{}{}'.format(prev, translator_name, self.__countries.get(code, 'Other'))
+        translator_name = f'{translator[0]}-' if len(translator) == 1 else ''
+        return f"{prev}-{translator_name}{self.__countries.get(code, 'Other')}"
 
     def get_chapter_index(self) -> str:
-        return '{}-{}'.format((self.volume_num(self.chapter) or ''), self.chapter_num(self.chapter)).strip('-')
+        return f"{self.volume_num(self.chapter) or ''}-{self.chapter_num(self.chapter)}".strip(
+            '-'
+        )
 
     def manga_idx(self):
         return self.re.search(r'/title/([^/]+)', self.get_url()).group(1)
@@ -126,7 +125,7 @@ class MangaDexOrg(Provider, Std):
         return None
 
     def chapter_for_json(self) -> str:
-        return '{}-{}'.format(self.volume_num(self.chapter) or '0', self.chapter_num(self.chapter))
+        return f"{self.volume_num(self.chapter) or '0'}-{self.chapter_num(self.chapter)}"
 
     def _chapters(self, languages: typing.Optional[typing.List[str]] = None):
         if self.__chapters is None:
@@ -160,7 +159,7 @@ class MangaDexOrg(Provider, Std):
         else:
             languages = arg_language
 
-        return list(set([lng.strip() for lng in languages.split(',')]))
+        return list({lng.strip() for lng in languages.split(',')})
 
     @property
     def _available_languages(self):
@@ -174,7 +173,7 @@ class MangaDexOrg(Provider, Std):
 
     @staticmethod
     def filter_chapters(chapters, languages: list) -> list:
-        if len(languages) == 0 or languages[0] == '':
+        if not languages or languages[0] == '':
             return chapters
         return [chapter for chapter in chapters if chapter['attributes']['translatedLanguage'] in languages]
 

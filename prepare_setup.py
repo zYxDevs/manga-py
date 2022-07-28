@@ -24,7 +24,7 @@ def req(lines: list):
         matched = RE_REPLACE_SETUP_REQ.search(line)
         if matched is not None:
             _b, _a = matched.groups()
-            lines[n] = '%s%s%s' % (_b, requirements, _a)
+            lines[n] = f'{_b}{requirements}{_a}'
             break
 
     return lines
@@ -34,7 +34,7 @@ with open('setup.py.template', 'r') as r:
     content = r.read()
 
     for key in meta.__all__:
-        content = content.replace('__%s__' % key, getattr(meta, key))
+        content = content.replace(f'__{key}__', getattr(meta, key))
 
     with open('setup.py', 'w') as w:
         w.write('\n'.join(req(content.splitlines())))

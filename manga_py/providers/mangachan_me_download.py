@@ -24,7 +24,7 @@ class MangaChanMe(Provider, Std):
     def get_chapters(self):
         selector = r'\.\w{2,7}/[^/]+/(\d+-.+\.html)'
         url = self._get_name(selector)
-        url = '{}/download/{}'.format(self.domain, url)
+        url = f'{self.domain}/download/{url}'
         return self.html_fromstring(url, 'table#download_table tr td + td > a')[::-1]
 
     def get_files(self):
@@ -32,7 +32,7 @@ class MangaChanMe(Provider, Std):
 
     def get_cover(self):
         selector = r'\.\w{2,7}/[^/]+/(\d+-.+\.html)'
-        url = '{}/manga/{}'.format(self.domain, self._get_name(selector))
+        url = f'{self.domain}/manga/{self._get_name(selector)}'
         img = self._elements('#cover', self.http_get(url))
         if img and len(img):
             return img[0].get('src')

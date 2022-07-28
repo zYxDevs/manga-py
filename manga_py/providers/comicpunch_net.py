@@ -18,7 +18,7 @@ class ComicPunchNet(Provider, Std):
         return self._elements('.chapter > a')
 
     def get_files(self):
-        parser = self.html_fromstring(self.chapter + '?q=fullchapter')
+        parser = self.html_fromstring(f'{self.chapter}?q=fullchapter')
         base_url = parser.cssselect('base[href]')[0].get('href')
         return [parse.urljoin(base_url, i) for i in self._images_helper(parser, 'img.picture')]
 

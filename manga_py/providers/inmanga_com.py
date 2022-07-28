@@ -11,10 +11,8 @@ class InMangaCom(Provider, Std):
     def get_content(self):
         if not self.__local_storage.get('uri_hex', False):
             self.get_manga_name()
-        url = '{}/chapter/getall?mangaIdentification={}'.format(
-            self.domain,
-            self.__local_storage['uri_hex']
-        )
+        url = f"{self.domain}/chapter/getall?mangaIdentification={self.__local_storage['uri_hex']}"
+
         with self.http().get(url) as resp:
             data = resp.json()['data']
 
@@ -22,8 +20,7 @@ class InMangaCom(Provider, Std):
 
     def get_manga_name(self) -> str:
         url = self.get_url()
-        test = self.re.search(r'/ver/manga/[^/]+/\d+/[^/]+', url)
-        if test:
+        if test := self.re.search(r'/ver/manga/[^/]+/\d+/[^/]+', url):
             content = self._elements('.chapterControlsContainer label.blue a.blue')[0]
             url = self.domain + content.get('href')
         manga_name, uri_hex = self.re.search('/ver/manga/([^/]+)/([^/]+)', url).groups()
@@ -43,12 +40,7 @@ class InMangaCom(Provider, Std):
         self.__local_storage = {}
 
     def _make_url(self, chapter):
-        return '{}/ver/manga/{}/{}/{}'.format(
-            self.domain,
-            self.manga_name,
-            chapter['FriendlyChapterNumber'],
-            chapter['Identification']
-        )
+        return f"{self.domain}/ver/manga/{self.manga_name}/{chapter['FriendlyChapterNumber']}/{chapter['Identification']}"
 
     def get_files(self):
         files_url = '{}/page/getPageImage/?identification={}'
@@ -60,7 +52,7 @@ class InMangaCom(Provider, Std):
 
     def get_cover(self):
         idx = self.__local_storage['uri_hex']
-        return '{}/manga/getMangaImage?identification={}'.format(self.domain, idx)
+        return f'{self.domain}/manga/getMangaImage?identification={idx}'
 
     def book_meta(self) -> dict:
         # todo meta

@@ -28,11 +28,17 @@ class VizCom(Provider, Std):
             re = self.re.compile(r'-chapter-(\d+)/')
             idx = re.search(self.chapter).group(1)
         except AttributeError:
-            self.log('manga-py can not get the number of the chapter!\nurl: {}'.format(self.chapter), file=stderr)
-            self.log(' Please, report this error\n {}{}\n\n'.format(
-                meta.repo_url, '/issues/new?template=bug_report.md'
-            ), file=stderr)
-        info('Chapter idx: {}'.format(idx))
+            self.log(
+                f'manga-py can not get the number of the chapter!\nurl: {self.chapter}',
+                file=stderr,
+            )
+
+            self.log(
+                f' Please, report this error\n {meta.repo_url}/issues/new?template=bug_report.md\n\n',
+                file=stderr,
+            )
+
+        info(f'Chapter idx: {idx}')
         return idx
 
     def get_content(self):
@@ -71,7 +77,7 @@ class VizCom(Provider, Std):
             'manga_id={}'.format(self.re.search(r'/chapter/(\d+)', ch).group(1)),
             'metadata=1',
         ]
-        url = '{}/manga/get_manga_url?'.format(self.domain) + '&'.join(params)
+        url = f'{self.domain}/manga/get_manga_url?' + '&'.join(params)
         self.log(self.http_get(self.normalize_uri(url)))
         __url = self.http_get(self.normalize_uri(url)).strip()
         self._metadata = loads(self.http_get(__url))
@@ -81,8 +87,8 @@ class VizCom(Provider, Std):
             'manga_id={}'.format(self.re.search(r'/chapter/(\d+)', ch).group(1)),
             'page={page}',
         ]
-        url = '{}/manga/get_manga_url?'.format(self.domain) + '&'.join(params)
-        info('Chapter url: %s' % url)
+        url = f'{self.domain}/manga/get_manga_url?' + '&'.join(params)
+        info(f'Chapter url: {url}')
         if self.__has_auth:
             params.append('client_login=true')
             info('Logged client!')
@@ -128,13 +134,17 @@ class VizCom(Provider, Std):
             return
 
         req = self.http().requests(
-            '{}/account/try_login'.format(self.domain),
-            method='post', cookies=self.__cookies, data={
+            f'{self.domain}/account/try_login',
+            method='post',
+            cookies=self.__cookies,
+            data={
                 'login': name,
                 'pass': password,
                 'rem_user': 1,
                 'authenticity_token': token,
-            })
+            },
+        )
+
 
         if req.status_code >= 400:
             self.log('Login/password error')
@@ -150,9 +160,9 @@ class VizCom(Provider, Std):
             )
         except ValueError:
             error('Remember error!')
-            error('Please, report this error {}{}'.format(
-                meta.repo_url, '/issues/new?template=bug_report.md'
-            ))
+            error(
+                f'Please, report this error {meta.repo_url}/issues/new?template=bug_report.md'
+            )
 
     def save_cookies(self, cookies: dict):
         with open(self.cookie_file, 'w') as w:
@@ -168,13 +178,16 @@ class VizCom(Provider, Std):
         return {}
 
     def get_token(self):
-        auth_token_url = '{}/account/refresh_login_links'.format(self.domain)
+        auth_token_url = f'{self.domain}/account/refresh_login_links'
         auth_token = self.http_get(auth_token_url, cookies=self.__cookies)
         token = self.re.search(r'AUTH_TOKEN\s*=\s*"(.+?)"', auth_token)
         return token.group(1)
 
     def has_auth(self):
-        content = self.http_get('{}/account/refresh_login_links'.format(self.domain), cookies=self.__cookies)
+        content = self.http_get(
+            f'{self.domain}/account/refresh_login_links', cookies=self.__cookies
+        )
+
         parser = self.document_fromstring(content)
         profile = parser.cssselect('.o_profile-link')
         success = len(profile) > 0
@@ -192,10 +205,10 @@ class VizCom(Provider, Std):
         _path, idx, _url = super().before_download_file(idx, url)
         if not self._continue:
             return None, None, None
-        info('\nSave file: {}'.format(idx))
-        info('File url: {}'.format(_url))
+        info(f'\nSave file: {idx}')
+        info(f'File url: {_url}')
 
-        info('File params:\n PATH: {}\n IDX: {}\n URL: {}'.format(_path, idx, _url))
+        info(f'File params:\n PATH: {_path}\n IDX: {idx}\n URL: {_url}')
 
         self.http().cookies['chapter-series-5-follow-modal'] = time.strftime('%Y-%m-%d')
 
@@ -213,7 +226,7 @@ class VizCom(Provider, Std):
 
         if __url.find('http') != 0:
             if self._continue:
-                error('\nURL is wrong: \n {}\n'.format(__url))
+                error(f'\nURL is wrong: \n {__url}\n')
             self._continue = False
             return None, None, None
         return _path, idx, __url
@@ -233,9 +246,9 @@ class VizCom(Provider, Std):
         self._wait_after_file()
 
         if ref is not None:
-            solved_path = _path + '-solved.jpeg'
+            solved_path = f'{_path}-solved.jpeg'
             ref.save(solved_path)
-            return solved_path, 'solved{}.jpeg'.format(idx)
+            return solved_path, f'solved{idx}.jpeg'
         return _path, arc_name
 
     def viz_downloader(self, file_name, url, method):

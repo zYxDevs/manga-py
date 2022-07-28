@@ -29,9 +29,7 @@ class ShakaiRu(Provider, Std):
 
     def get_files(self):
         chapter = self.chapter
-        if isinstance(chapter, dict):
-            return chapter.get('data-second', [])
-        return []
+        return chapter.get('data-second', []) if isinstance(chapter, dict) else []
 
     def get_cover(self):
         pass  # FIXME HOME

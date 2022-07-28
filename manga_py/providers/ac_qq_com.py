@@ -14,7 +14,7 @@ class AcQqCom(Provider, Std):
         if content is not None:
             return content
         idx = self._get_name(r'/id/(\d+)')
-        return self.http_get('{}/Comic/comicInfo/id/{}'.format(self.domain, idx))
+        return self.http_get(f'{self.domain}/Comic/comicInfo/id/{idx}')
 
     def get_manga_name(self) -> str:
         return self.text_content_full(self.content, '.works-intro-title strong', 0)
@@ -25,7 +25,7 @@ class AcQqCom(Provider, Std):
     def get_files(self):
         content = self.http_get(self.chapter)
         _nonce = self.re.search(r'window\[".*o.*c.*"\]\s*=\s*(.+);', content).group(1)
-        _nonce = BaseLib.exec_js('var _P = {}'.format(_nonce), '_P')
+        _nonce = BaseLib.exec_js(f'var _P = {_nonce}', '_P')
 
         raw_data = self._re.search(content).group(1)
 
@@ -44,15 +44,15 @@ class AcQqCom(Provider, Std):
         self._base_cookies()
 
     def book_meta(self) -> dict:
-        result = {
+        return {
             'author': self.text_content_full(self.content, '.works-intro-digi em'),
             'rating': self.text_content_full(self.content, 'p.ui-left strong'),
             'cover': self.get_cover(),
-            'annotation': self.text_content_full(self.content, '.works-intro-short'),
+            'annotation': self.text_content_full(
+                self.content, '.works-intro-short'
+            ),
             'language': 'cn',
         }
-
-        return result
 
 
 main = AcQqCom

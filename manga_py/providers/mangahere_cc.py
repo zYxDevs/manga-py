@@ -8,8 +8,7 @@ class MangaHereCc(Provider, Std):
     def get_chapter_index(self) -> str:
         chapter = self.chapter
         selector = r'/manga/[^/]+/[^\d]+(\d+)/[^\d]+(\d+)'
-        idx = self.re.search(selector, chapter)
-        if idx:
+        if idx := self.re.search(selector, chapter):
             return '-'.join(idx.groups())
         selector = r'/manga/[^/]+/[^\d]+(\d+)'
         return self.re.search(selector, chapter).group(1)
@@ -36,20 +35,18 @@ class MangaHereCc(Provider, Std):
 
     def guid_key(self, content):
         js = self.re.search(r'>\s*eval(\(function.+\))\s*<', content).group(1)
-        key = BaseLib.exec_js('var j=' + js, 'j').split(';')
+        key = BaseLib.exec_js(f'var j={js}', 'j').split(';')
         return BaseLib.exec_js(key[0], 'guidkey')
 
     def _parse_images(self, pages, chapter_url, chapter_id, guid_key):
         images = []
         for page in range(0, pages + 1, 2):
-            images_content = self.http_get('{}/chapterfun.ashx?cid={}&page={}&key={}'.format(
-                chapter_url,
-                chapter_id,
-                page,
-                guid_key,
-            ))
+            images_content = self.http_get(
+                f'{chapter_url}/chapterfun.ashx?cid={chapter_id}&page={page}&key={guid_key}'
+            )
+
             js = self.re.search(r'eval\((.+)\)', images_content).group(1)
-            img = BaseLib.exec_js(BaseLib.exec_js('var _p = ' + js, '_p'), 'd')
+            img = BaseLib.exec_js(BaseLib.exec_js(f'var _p = {js}', '_p'), 'd')
             for i in img:
                 if i not in images:
                     images.append(i)

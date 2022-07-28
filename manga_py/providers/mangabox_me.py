@@ -8,7 +8,7 @@ class MangaBoxMe(Provider, Std):
 
     def get_content(self):
         idx = self._get_name(r'/reader/(\d+)/episodes/')
-        return self.http_get('{}/reader/{}/episodes/'.format(self.domain, idx))
+        return self.http_get(f'{self.domain}/reader/{idx}/episodes/')
 
     def get_manga_name(self) -> str:
         selector = 'meta[property="og:title"]'

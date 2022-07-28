@@ -12,10 +12,14 @@ class HiperDexCom(RawDevArtComOld, Std):
             return []
 
         manga_id = items[0].get('data-id')
-        content = self.http_post('{}/wp-admin/admin-ajax.php'.format(self.domain), data={
-            'action': 'manga_get_chapters',
-            'manga': manga_id,
-        })
+        content = self.http_post(
+            f'{self.domain}/wp-admin/admin-ajax.php',
+            data={
+                'action': 'manga_get_chapters',
+                'manga': manga_id,
+            },
+        )
+
 
         return self._elements('.wp-manga-chapter > a', content)
 

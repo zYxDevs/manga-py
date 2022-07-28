@@ -16,8 +16,7 @@ class ComicNnNet(Provider, Std):
 
     def _iframe_hook(self, url):
         content = self.html_fromstring(url)
-        iframe = content.cssselect('iframe')
-        if iframe:
+        if iframe := content.cssselect('iframe'):
             url = iframe[0].get('src')
             self.log('Iframe!\n' + url)
         return self.html_fromstring(url)
@@ -35,8 +34,7 @@ class ComicNnNet(Provider, Std):
 
     def get_files(self):
         content = self._iframe_hook(self.chapter)
-        files = content.cssselect('textarea#txtarea img')
-        if files:
+        if files := content.cssselect('textarea#txtarea img'):
             n = self.normalize_uri
             return [n(i.get('src')) for i in files]
         return []

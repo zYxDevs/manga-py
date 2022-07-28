@@ -43,20 +43,20 @@ class JapScanCom(Provider, Std):
     def prepare_cookies(self):
         raise RuntimeError('Provider not worked')
 
-        self._params['max_threads'] = 1
-        self.driver = make_driver('chrome')
-
     def _image(self):
         image = self.driver.find_element('#image')
         sleep(5)
         shadow = self.driver.find_element('cnv-vv')
         canvases_len = self.driver.driver.execute_script('return arguments[0].all_canvas.length;', shadow)
-        canvases = []
-        for i in range(int(canvases_len)):
-            canvases.append(self.driver.driver.execute_script(
+        canvases = [
+            self.driver.driver.execute_script(
                 'return arguments[0].all_canvas[arguments[1]].toDataURL("image/png").substring(21);',
-                shadow, i
-            ))
+                shadow,
+                i,
+            )
+            for i in range(int(canvases_len))
+        ]
+
         return None
 
 

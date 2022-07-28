@@ -12,8 +12,8 @@ class MangaSh(Provider, Std):
         _vol = chapter.get('VolumeNumber', 0)
         _ch_v = chapter.get('ChapterNumberVolume', '')
         if _ch_v:
-            _ch_v = '_' + _ch_v
-        return '{}-{}{}'.format(_vol, _ch, _ch_v)
+            _ch_v = f'_{_ch_v}'
+        return f'{_vol}-{_ch}{_ch_v}'
 
     def get_content(self):
         idx = self._get_name(r'/comics/(\d+)')
@@ -29,10 +29,7 @@ class MangaSh(Provider, Std):
         return list(self.content.get('response', []))
 
     def _url_helper(self, chapter):
-        return '{}series_chapters/{}'.format(
-            self._api_url,
-            chapter.get('Hash')
-        )
+        return f"{self._api_url}series_chapters/{chapter.get('Hash')}"
 
     def get_files(self):
         url = self._url_helper(self.chapter)
@@ -44,7 +41,7 @@ class MangaSh(Provider, Std):
     def get_cover(self) -> str:
         content = self.content.get('response')[0]
         content = content.get('SeriesId').get('CoverImage')
-        return '{}/covers/{}'.format(self._cdn_url, content)
+        return f'{self._cdn_url}/covers/{content}'
 
     def book_meta(self) -> dict:
         # todo meta

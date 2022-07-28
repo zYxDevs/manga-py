@@ -10,11 +10,11 @@ class TmoFansCom(Provider, Std):
             re = self.re.compile(r'Capítulo (\d+(?:\.\d+)?)')
             return re.search(self.chapter[0]).group(1).replace('.', '-')
         except IndexError as e:
-            self.log('\nNot found chapter index.\nURL: {}\nChapter: {}\nPlease, report this bug: {}{}\n'.format(
-                self.get_url(),
-                self.chapter[0],
-                repo_url, '/issues/new?template=bug_report.md'
-            ), file=stderr)
+            self.log(
+                f'\nNot found chapter index.\nURL: {self.get_url()}\nChapter: {self.chapter[0]}\nPlease, report this bug: {repo_url}/issues/new?template=bug_report.md\n',
+                file=stderr,
+            )
+
 
             raise e
 
@@ -39,10 +39,7 @@ class TmoFansCom(Provider, Std):
             request_url = n(link.get('href'))
             response = self.http().requests(request_url, method='head')
             url = n(re.search(response.headers['Location']).group(1))
-            chapters.append((
-                text,
-                url + 'cascade',
-            ))
+            chapters.append((text, f'{url}cascade'))
 
         return chapters
 

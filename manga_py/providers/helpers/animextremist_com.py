@@ -15,10 +15,7 @@ class AnimeXtremistCom:
 
     @staticmethod
     def __sort(item, selector):
-        _re = selector.search(item)
-        if _re:
-            return int(_re.group(1))
-        return 0
+        return int(_re.group(1)) if (_re := selector.search(item)) else 0
 
     def sort_items(self, items):
         r = self.provider.re.compile(r'.+?-(\d+)')
@@ -30,30 +27,24 @@ class AnimeXtremistCom:
 
     def _chapters(self, url=None):
         a = 'li + li > a'
-        if url:
-            items = self.provider.html_fromstring(url, a)
-        else:
-            items = self.provider.document_fromstring(self.provider.content, a)
-        return items
+        return (
+            self.provider.html_fromstring(url, a)
+            if url
+            else self.provider.document_fromstring(self.provider.content, a)
+        )
 
     # http://animextremist.com/mangas-online/99love/
     def _chapters_with_dirs(self, items):
         result = []
         for i in items:
             href = i.get('href')
-            url = '{}{}'.format(self.path, href)
-            result += [(href, ['{}{}'.format(
-                url,
-                a.get('href')
-            ) for a in self._chapters(url)])]
+            url = f'{self.path}{href}'
+            result += [(href, [f"{url}{a.get('href')}" for a in self._chapters(url)])]
         return result
 
     @staticmethod
     def _rebuild_dict_to_tuple(_dict):
-        result = []
-        for i in _dict:
-            result += [(i, [a for a in _dict[i]])]
-        return result
+        return [(i, list(_dict[i])) for i in _dict]
 
     # http://animextremist.com/mangas-online/onepiece-manga/
     def _chapters_without_dirs(self, items):
@@ -64,7 +55,7 @@ class AnimeXtremistCom:
             key = self.provider.re.search(r, href).group(1)
             if result.get(key) is None:
                 result[key] = []
-            result[key].append('{}{}'.format(self.path, href))
+            result[key].append(f'{self.path}{href}')
         return self._rebuild_dict_to_tuple(result)
 
     def get_chapters(self):

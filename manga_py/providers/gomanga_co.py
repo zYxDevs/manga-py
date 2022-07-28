@@ -25,7 +25,7 @@ class GoMangaCo(Provider, Std):
 
     def _get_json_selector(self, content):
         idx = self.re.search(r'page_width\s=\sparseInt\((\w+)\[', content).group(1)
-        return r'var\s{}\s*=\s*(\[.+\])'.format(idx)
+        return f'var\s{idx}\s*=\s*(\[.+\])'
 
     def get_files(self):
         self._go_chapter_content = self.http_get(self.chapter)

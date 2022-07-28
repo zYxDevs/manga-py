@@ -18,7 +18,7 @@ class TapasIo(Provider, Std):  # TODO: Login\Password
 
     def get_content(self):
         content = self._storage.get('main_content', False)
-        return content if content else self.http_get(self.get_url())
+        return content or self.http_get(self.get_url())
 
     def get_manga_name(self) -> str:
         return self.re.search(r'seriesTitle\s*:\s*\'(.+)\',', self.content).group(1)

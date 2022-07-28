@@ -22,7 +22,7 @@ class Hentai2ReadCom(Provider, Std):
         content = self.http_get(self.chapter)
         selector = r'\'images\'\s*:\s*(\[.+\])'
         items = self.json.loads(self.re.search(selector, content).group(1))
-        return ['{}{}'.format(self.images_cdn, i) for i in items]
+        return [f'{self.images_cdn}{i}' for i in items]
 
     def get_cover(self) -> str:
         return self._cover_from_content('.ribbon-primary a > img')

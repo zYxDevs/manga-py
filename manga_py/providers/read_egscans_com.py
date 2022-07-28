@@ -25,7 +25,7 @@ class ReadEgScansCom(Provider, Std):
         content = self.http_get(url)
         items = self.re.findall(r'img_url\.push\s?\(\s?\'(.+)\'\s?\)', content)
         domain = self.domain
-        return ['{}/{}'.format(domain, i) for i in items]
+        return [f'{domain}/{i}' for i in items]
 
     def get_cover(self) -> str:
         pass

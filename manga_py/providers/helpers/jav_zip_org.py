@@ -15,7 +15,7 @@ class JavZipOrg:
         if parser.re.search(r'jav-zip\.org', url):
             self.url = url
             _ = urlparse(url)
-            self.domain = _.scheme + '://' + _.netloc
+            self.domain = f'{_.scheme}://{_.netloc}'
 
     def _parse_id(self):
         return self.parser.re.search('/.p=(\d+)', self.url).group(1)
@@ -32,9 +32,7 @@ class JavZipOrg:
         url = url.format(self.domain, self._parse_id, step)
         content = self.parser.json.loads(self.parser.http_get(url))
         content = self.parser.document_fromstring(content['mes'])
-        allow_more = True
-        if len(content.cssselect('a.view-more')) < 1:
-            allow_more = False
+        allow_more = len(content.cssselect('a.view-more')) >= 1
         return allow_more, content
 
     def get_images(self):

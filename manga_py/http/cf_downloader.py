@@ -14,10 +14,11 @@ class CfHttp:
 
     def __req(self, method, url, **kwargs) -> requests.Response:
         headers = kwargs.get('headers', {})
-        kwargs.update({
+        kwargs |= {
             'cmd': f'request.{method}',
             'url': url,
             'userAgent': headers.get('User-Agent', self.__ua),
             'maxTimeout': int(kwargs.get('maxTimeout', 60000)),
-        })
+        }
+
         return requests.post(f'{self.cf_proxy}/v1', **kwargs)

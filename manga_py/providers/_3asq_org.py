@@ -12,7 +12,7 @@ class ThreeAsqOrg(RawDevArtComOld):
 
     @property
     def chapter(self):
-        return super().chapter + '?style=list'
+        return f'{super().chapter}?style=list'
 
 
 main = ThreeAsqOrg

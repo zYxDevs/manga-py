@@ -12,12 +12,8 @@ class ZeroScansCom(Provider, Std):
         ).group(1).replace('/', '-')
 
     def get_content(self):
-        name = self._get_name(r'%s([^/]+)' % self._key)
-        return self.http_get('%s%s%s/' % (
-            self.domain,
-            self._key,
-            name
-        ))
+        name = self._get_name(f'{self._key}([^/]+)')
+        return self.http_get(f'{self.domain}{self._key}{name}/')
 
     def get_manga_name(self) -> str:
         return self._get_name(r'%s\d+-([^/]+)' % self._key)
@@ -39,9 +35,7 @@ class ZeroScansCom(Provider, Std):
 
     def get_cover(self) -> str:
         image = self._elements('.media img.media-content')
-        if len(image):
-            return self.parse_background(image)
-        return ''
+        return self.parse_background(image) if len(image) else ''
 
 
 main = ZeroScansCom
