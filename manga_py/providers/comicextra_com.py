@@ -5,9 +5,8 @@ from .helpers.std import Std
 class ComicExtraCom(Provider, Std):
 
     def get_chapter_index(self) -> str:
-        idx = self.re.search(r'/chapter-(.+)', self.chapter)
-        if idx:
-            return '{}-{}'.format(self.chapter_id, idx.group(1))
+        if idx := self.re.search(r'/chapter-(.+)', self.chapter):
+            return f'{self.chapter_id}-{idx.group(1)}'
         return str(self.chapter_id)
 
     def get_content(self):
@@ -15,8 +14,7 @@ class ComicExtraCom(Provider, Std):
 
     def get_manga_name(self):
         url = self.get_url()
-        test = self.re.search('/comic/([^/]+)', url)
-        if test:
+        if test := self.re.search('/comic/([^/]+)', url):
             return test.group(1)
         return self.re.search('/([^/]+)/chapter', url).group(1)
 
@@ -24,7 +22,7 @@ class ComicExtraCom(Provider, Std):
         return self._elements('#list td a')
 
     def get_files(self):
-        url = self.chapter + '/full'
+        url = f'{self.chapter}/full'
         items = self.html_fromstring(url, '.chapter-container img.chapter_img')
         return [i.get('src') for i in items]
 

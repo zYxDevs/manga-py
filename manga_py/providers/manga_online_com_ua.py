@@ -58,7 +58,7 @@ class MangaOnlineCom(Provider, Std):
         images = []
         idx = self.re.search(r'/manga/[^/]+/(\d+)', chapter).group(1)
         for n in range(pages):
-            url = '{}/engine/ajax/sof_fullstory.php?id={}&page={}'.format(self.domain, idx, n + 1)
+            url = f'{self.domain}/engine/ajax/sof_fullstory.php?id={idx}&page={n + 1}'
             parser = self.html_fromstring(url)[0]
             images += self._images_helper(parser, 'img')
         return images

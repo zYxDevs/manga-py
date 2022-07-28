@@ -8,8 +8,7 @@ class ManhwaReaderCom(RawDevArtComOld):
         ch = self.chapter
         idx = self.re.search(self._chapter_selector, ch)
         idx = idx.group(1)
-        test = self.re.search(r'(\d+)[^\d](\d+)', idx)
-        if test:
+        if test := self.re.search(r'(\d+)[^\d](\d+)', idx):
             return '-'.join(test.groups())
         return idx
 

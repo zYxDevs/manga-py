@@ -61,11 +61,11 @@ class OnePerOneDownloader(BaseDownloadMethod):
 
     def _loop_files(self):
         if isinstance(self.files, list):
-            info('Processing {} files'.format(len(self.files)))
+            info(f'Processing {len(self.files)} files')
 
             if len(self.files) == 0:
                 # see Std
-                error('Error processing file: %s' % self.provider.get_archive_name())
+                error(f'Error processing file: {self.provider.get_archive_name()}')
                 return
 
             self._archive = Archive()
@@ -99,7 +99,8 @@ class OnePerOneDownloader(BaseDownloadMethod):
             _info = self._book_info_xml()
             self._archive.write_file('ComicInfo.xml', str(_info))
 
-        info = 'Site: {}\nDownloader: {}\nVersion: {}'.format(self.provider.get_url(), repo_url, version)
+        info = f'Site: {self.provider.get_url()}\nDownloader: {repo_url}\nVersion: {version}'
+
 
         self._archive.write_file('info.txt', info)
 
@@ -143,7 +144,7 @@ class OnePerOneDownloader(BaseDownloadMethod):
         _path, _in_arc_name = self.provider.after_file_save(_path, idx)
 
         if _path is None:
-            info('after_file_save is None. Idx: {} / Url: {}'.format(idx, url), file=stderr)
+            info(f'after_file_save is None. Idx: {idx} / Url: {url}', file=stderr)
             return None
 
         self._archive.add_file(_path, in_arc_name=(_in_arc_name or in_arc_name))
@@ -213,7 +214,7 @@ class WholeArchiveDownloader(BaseDownloadMethod):
     def make_archive(self):
         _path = self.get_archive_path()
 
-        info = 'Site: {}\nDownloader: {}\nVersion: {}'.format(self.get_url(), repo_url, version)
+        info = f'Site: {self.get_url()}\nDownloader: {repo_url}\nVersion: {version}'
 
         # """
         # make book info

@@ -29,26 +29,16 @@ class TsuminoCom(Provider, Std):
 
     def get_files(self):
         idx = self.re.search(r'/(?:Info|View)/(\d+)', self.get_url()).group(1)
-        test_url = '{}/Read/View{}'.format(self.domain, idx)
+        test_url = f'{self.domain}/Read/View{idx}'
         if ~self.http_get(test_url).find('/recaptcha'):
             cookies = tsumino_com.TsuminoCom(self).get_cookies(test_url).get_dict()
             for i in cookies:
                 self._storage['cookies'][i] = cookies[i]
 
-        with self.http().post(
-            '{}/Read/Load'.format(self.domain, idx),
-            headers={
-                'X-Requested-With': 'XMLHttpRequest',
-                'Referer': '{}/Read/View/{}'.format(self.domain, idx),
-                'Pragma': 'no-cache',
-                'Cache-Control': 'no-cache',
-                'Accept-Language': 'en-US;q=0.8,en;q=0.7',
-            },
-            data={'q': idx}
-        ) as resp:
+        with self.http().post(f'{self.domain}/Read/Load', headers={'X-Requested-With': 'XMLHttpRequest', 'Referer': f'{self.domain}/Read/View/{idx}', 'Pragma': 'no-cache', 'Cache-Control': 'no-cache', 'Accept-Language': 'en-US;q=0.8,en;q=0.7'}, data={'q': idx}) as resp:
             items = resp.json().get('reader_page_urls', [])
         d = str(self.domain)
-        return [d + '/Image/Object?name=' + i for i in items]
+        return [f'{d}/Image/Object?name={i}' for i in items]
 
     def get_cover(self) -> str:
         return self._cover_from_content('img.book-page-image')

@@ -10,7 +10,7 @@ class ComicNaverCom(Provider, Std):
         return self.get_chapter_index()
 
     def get_chapter_index(self) -> str:
-        return 'vol_{}-{}'.format(self.chapter_id, self.chapter[1])
+        return f'vol_{self.chapter_id}-{self.chapter[1]}'
 
     def get_content(self):
         return self.http_get(self.url_pattern.format(self.title_id))
@@ -32,10 +32,7 @@ class ComicNaverCom(Provider, Std):
         chapters, max_page = self._chapters_part(self.content)
         page = 2
 
-        while True:
-            if page >= max_page:
-                break
-
+        while page < max_page:
             content = self.http_get(self.url_pattern.format(f'{self.title_id}&page={page}'))
             _chapters, max_page = self._chapters_part(content)
 

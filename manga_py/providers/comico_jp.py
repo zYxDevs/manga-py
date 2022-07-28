@@ -7,18 +7,18 @@ from .helpers.std import Std
 class ComicoJp(Provider, Std):
 
     def get_chapter_index(self) -> str:
-        idx = self.re.search(r'articleNo=(\d+)', self.chapter)
-        if idx:
-            return '{}-{}'.format(self.chapter_id, idx.group(1))
+        if idx := self.re.search(r'articleNo=(\d+)', self.chapter):
+            return f'{self.chapter_id}-{idx.group(1)}'
         return str(self.chapter_id)
 
     def get_content(self):
-        title_no = self.re.search(r'\.\w{2,7}/.+titleNo=(\d+)', self.get_url())
-        if title_no:
+        if title_no := self.re.search(
+            r'\.\w{2,7}/.+titleNo=(\d+)', self.get_url()
+        ):
             try:
-                with self.http_post('{}/api/getArticleList.nhn'.format(self.domain), data={
-                    'titleNo': title_no.group(1)
-                }) as req:
+                with self.http_post(f'{self.domain}/api/getArticleList.nhn', data={
+                                'titleNo': title_no.group(1)
+                            }) as req:
                     images = req.json().get('result', {}).get('list', [])
 
                 return images

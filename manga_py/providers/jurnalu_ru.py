@@ -10,10 +10,9 @@ class JurnaluRu(Provider, Std):
     def get_content(self):
         name = self._get_name(r'(online-reading/[^/]+/[^/]+)')
         url = self.html_fromstring(
-            '{}/{}'.format(self.domain, name),
-            '.MagList .MagListLine > a',
-            0
+            f'{self.domain}/{name}', '.MagList .MagListLine > a', 0
         ).get('href')
+
         return self.http_get(self.domain + url)
 
     def get_manga_name(self) -> str:
@@ -24,7 +23,7 @@ class JurnaluRu(Provider, Std):
         if not name:
             return []
         items = self.document_fromstring(self.content, 'select.magSelection option')
-        url = '{}/{}/'.format(self.domain, name.group(1))
+        url = f'{self.domain}/{name.group(1)}/'
         return [url + i.get('value') for i in items]
 
     @staticmethod
@@ -38,7 +37,7 @@ class JurnaluRu(Provider, Std):
         pages = page.cssselect('.navigation')[0].cssselect('select.M option + option')
         images = [self.__get_file(page)]
         for i in pages:
-            uri = '{}/{}'.format(chapter, i.get('value'))
+            uri = f"{chapter}/{i.get('value')}"
             parser = self.html_fromstring(uri, '.ForRead', 0)
             images.append(self.__get_file(parser))
         return images

@@ -23,11 +23,8 @@ class Std:
 
     @staticmethod
     def _first_select_options(parser, selector, skip_first=True) -> list:
-        options = 'option'
-        if skip_first:
-            options = 'option + option'
-        select = parser.cssselect(selector)
-        if select:
+        options = 'option + option' if skip_first else 'option'
+        if select := parser.cssselect(selector):
             return select[0].cssselect(options)
         return []
 
@@ -49,16 +46,13 @@ class Std:
 
     @staticmethod
     def _join_groups(idx, glue='-') -> str:
-        result = []
-        for i in idx:
-            if i:
-                result.append(i)
+        result = [i for i in idx if i]
         return glue.join(result)
 
     def _get_name(self, selector, url=None) -> str:
         if url is None:
             url = self.get_url()
-        return re.search(selector, url).group(1)
+        return re.search(selector, url)[1]
 
     def _get_content(self, tpl, domain=None, manga_name=None, name=None, **kwargs) -> str:
         """
@@ -90,13 +84,11 @@ class Std:
             r'background.+?url\([\'"]?([^\s]+?)[\'"]?\)',
             image.get('style')
         )
-        return self.normalize_uri(url.group(1))
+        return self.normalize_uri(url[1])
 
     def text_content_full(self, content, selector, idx: int = 0, strip: bool = True) -> Optional[str]:
         doc = self.document_fromstring(content, selector)
-        if not doc:
-            return None
-        return self.element_text_content_full(doc[idx], strip)
+        return self.element_text_content_full(doc[idx], strip) if doc else None
 
     def element_text_content_full(self, element, strip: bool = True) -> str:
         text = element.text_content()
@@ -106,9 +98,7 @@ class Std:
 
     def text_content(self, content, selector, idx: int = 0, strip: bool = True) -> Optional[str]:
         doc = self.document_fromstring(content, selector)
-        if not doc:
-            return None
-        return self.element_text_content(doc[idx], strip)
+        return self.element_text_content(doc[idx], strip) if doc else None
 
     def element_text_content(self, element, strip: bool = True) -> str:
         text = element.text
@@ -127,10 +117,7 @@ class Std:
                 now_try_count += 1
                 response = get(url, timeout=60, allow_redirects=True, headers=headers, cookies=cookies)
                 if response.status_code >= 400:
-                    error('ERROR! Code {}\nUrl: {}'.format(
-                        response.status_code,
-                        url,
-                    ))
+                    error(f'ERROR! Code {response.status_code}\nUrl: {url}')
                     sleep(2)
                     continue
                 out_file.write(response.content)

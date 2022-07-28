@@ -33,7 +33,7 @@ class MerakiScansCom(Provider, Std):
 
         # SRC RULE: "/manga/" + manga_slug + "/" + currentChapter + "/" + images[pageNum - 1];
 
-        return ['{}/manga/{}/{}/{}'.format(self.domain, slug, chapter, i) for i in images]
+        return [f'{self.domain}/manga/{slug}/{chapter}/{i}' for i in images]
 
     def get_cover(self) -> str:
         return self._cover_from_content('#cover_img')

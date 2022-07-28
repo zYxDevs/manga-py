@@ -13,7 +13,7 @@ class ComicsAndMangaRu(Provider, Std):
 
     def get_content(self):
         name = self.re.search('/(online-reading/[^/]+/[^/]+)', self.get_url())
-        return self.http_get('{}/{}'.format(self.domain, name.group(1)))
+        return self.http_get(f'{self.domain}/{name.group(1)}')
 
     def get_manga_name(self):
         name = self.re.search('/online-reading/[^/]+/([^/]+)', self.get_url())
@@ -33,7 +33,7 @@ class ComicsAndMangaRu(Provider, Std):
         images = self._images_helper(parser, img_selector)
 
         for i in pages:
-            uri = '{}/{}'.format(nu(self.chapter.rstrip('/')), i.get('value'))
+            uri = f"{nu(self.chapter.rstrip('/'))}/{i.get('value')}"
             parser = self.html_fromstring(uri, '.ForRead', 0)
             images += self._images_helper(parser, img_selector)
 

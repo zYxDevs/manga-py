@@ -132,8 +132,8 @@ class TestImages(unittest.TestCase):
         file = files_paths[0][0]
         image = MangaImage(root_path + file)
 
-        basename = file[0:file.find('.')]
-        basename = root_path + '/temp' + basename + '.bmp'
+        basename = file[:file.find('.')]
+        basename = f'{root_path}/temp{basename}.bmp'
         image.convert(basename)
         image.close()
 

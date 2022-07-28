@@ -35,8 +35,8 @@ def httpbin(bp: Base, _path: str):
                 _httpbin = url
                 break
     if _httpbin is None:
-        raise AttributeError('503. Service temporary unavailable / Path: %s ' % _path)
-    return '{}/{}'.format(_httpbin, _path.lstrip('/'))
+        raise AttributeError(f'503. Service temporary unavailable / Path: {_path} ')
+    return f"{_httpbin}/{_path.lstrip('/')}"
 
 
 class TestBaseClass(unittest.TestCase):
@@ -44,7 +44,7 @@ class TestBaseClass(unittest.TestCase):
     def test_base0(self):
         bp = Base()
         domain = 'http://example.org'
-        bp._params['url'] = domain + '/manga/here.html'
+        bp._params['url'] = f'{domain}/manga/here.html'
         self.assertEqual(bp._params['url'], bp.get_url())
         self.assertEqual(domain, bp.domain)
 

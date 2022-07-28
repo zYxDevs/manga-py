@@ -30,13 +30,10 @@ class EHentaiOrg(Provider, Std):
         return list(range(max_idx, -1, -1))
 
     def get_files(self):
-        url = self.helper.get_url() + '?p='
+        url = f'{self.helper.get_url()}?p='
         selector = '#gdt div[class^=gdt] a'
         idx = self.chapter
-        if idx == 0:
-            content = self.content
-        else:
-            content = self.http_get('{}{}'.format(url, idx))
+        content = self.content if idx == 0 else self.http_get(f'{url}{idx}')
         pages = self.document_fromstring(content, selector)
 
         n = self.normalize_uri

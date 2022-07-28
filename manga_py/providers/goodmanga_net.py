@@ -12,13 +12,13 @@ class GoodMangaNet(Provider, Std):
         if ~url.find('/chapter/'):
             url = self.html_fromstring(url, '#manga_head h3 > a', 0).get('href')
         _id = self.re.search(r'net/(\d+/[^/]+)', url).group(1)
-        return self.http_get('{}/{}'.format(self.domain, _id))
+        return self.http_get(f'{self.domain}/{_id}')
 
     def get_manga_name(self) -> str:
         url = self.get_url()
         reg = r'/([^/]+)/chapter/|net/\d+/([^/]+)'
         groups = self.re.search(reg, url).groups()
-        return groups[0] if groups[0] else groups[1]
+        return groups[0] or groups[1]
 
     @staticmethod
     def get_chapters_links(parser):

@@ -8,24 +8,19 @@ class MangaFoxMe(Provider, Std):
     def get_archive_name(self) -> str:
         groups = self._ch_parser()
         ch = groups[1].replace('.', '-')
-        vol = ['0']
-        if groups[0]:
-            vol = [groups[0]]
+        vol = [groups[0]] if groups[0] else ['0']
         return self.normal_arc_name({'vol': vol, 'ch': ch})
 
     def _ch_parser(self):
         selector = r'/manga/[^/]+/(?:v([^/]+)/)?c([^/]+)/'
-        groups = self.re.search(selector, self.chapter).groups()
-        return groups
+        return self.re.search(selector, self.chapter).groups()
 
     def get_chapter_index(self) -> str:
         groups = self._ch_parser()
         idx = groups[1].replace('.', '-')
         if not ~idx.find('-'):
-            idx = idx + '-0'
-        if groups[0]:
-            return '{}-{}'.format(idx, groups[0])
-        return idx
+            idx = f'{idx}-0'
+        return f'{idx}-{groups[0]}' if groups[0] else idx
 
     def get_content(self):
         return self._get_content('{}/manga/{}')
@@ -38,19 +33,16 @@ class MangaFoxMe(Provider, Std):
 
     def _get_links(self, content):
         js = self.re.search(r'eval\((function\b.+)\((\'[\w ].+)\)\)', content).groups()
-        return BaseLib.exec_js('m = ' + js[0], 'm(' + js[1] + ')')
+        return BaseLib.exec_js(f'm = {js[0]}', f'm({js[1]})')
 
     def _one_link_helper(self, content, page):
         cid = self.re.search(r'chapterid\s*=\s*(\d+)', content).group(1)
-        base_url = self.chapter[0:self.chapter.rfind('/')]
+        base_url = self.chapter[:self.chapter.rfind('/')]
         links = self._get_links(content)
         key = ''.join(self.re.findall(r'\'(\w)\'', links))
-        return self.http_get('{}/chapterfun.ashx?cid={}&page={}&key={}'.format(
-            base_url,
-            cid,
-            page,
-            key
-        ))
+        return self.http_get(
+            f'{base_url}/chapterfun.ashx?cid={cid}&page={page}&key={key}'
+        )
 
     def _parse_links(self, data):
         base_path = self.re.search(r'pix="(.+?)"', data).group(1)
@@ -60,7 +52,7 @@ class MangaFoxMe(Provider, Std):
     def _get_links_page_to_page(self, content):
         last_page = self.document_fromstring(content, '.pager-list-left > span > a:nth-last-child(2)', 0)
         links = []
-        for i in range(0, int(int(last_page.get('data-page')) / 2 + .5)):
+        for i in range(int(int(last_page.get('data-page')) / 2 + .5)):
             data = self._one_link_helper(content, (i * 2) + 1)
             links += self._parse_links(self._get_links(data))
         return links

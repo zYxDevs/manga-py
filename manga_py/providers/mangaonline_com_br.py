@@ -19,8 +19,7 @@ class MangaOnlineComBr(Provider, Std):
 
     @staticmethod
     def _get_pages_count(parser):
-        pages = parser.cssselect('select.pagina-capitulo')
-        if pages:
+        if pages := parser.cssselect('select.pagina-capitulo'):
             return len(pages[0].cssselect('option + option'))
         return 0
 
@@ -34,8 +33,7 @@ class MangaOnlineComBr(Provider, Std):
         )
         parser = self.html_fromstring(url.format(*params, 1))
         images = self._images_helper(parser, img_selector)
-        pages = self._get_pages_count(parser)
-        if pages:
+        if pages := self._get_pages_count(parser):
             for i in range(int(pages / 2)):
                 parser = self.html_fromstring(url.format(*params, ((i + 1) * 2 + 1)))
                 images += self._images_helper(parser, img_selector)

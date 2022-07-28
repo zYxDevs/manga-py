@@ -14,7 +14,7 @@ class TestProvidersUnique(unittest.TestCase):
         providers = []
         for k in providers_list:
             for p in providers_list[k]:
-                self.assertFalse(p in providers, 'Duplicate reg {}'.format(p))
+                self.assertFalse(p in providers, f'Duplicate reg {p}')
                 providers.append(p)
 
 

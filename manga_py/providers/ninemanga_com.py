@@ -10,12 +10,11 @@ class NineMangaCom(NineHelper, Std):
 
     def get_content(self):
         name = self.get_manga_name(False)
-        return self.http_get('{}/manga/{}.html?waring=1'.format(self.domain, name))
+        return self.http_get(f'{self.domain}/manga/{name}.html?waring=1')
 
     def get_manga_name(self, normalize=True) -> str:
         if not self._local_storage:
-            name = self.re_name(self.get_url())
-            if name:
+            if name := self.re_name(self.get_url()):
                 self._local_storage = name.group(1)
             else:
                 url = self.html_fromstring(self.get_url(), '.subgiude > li + li > a', 0).get('href')
@@ -27,7 +26,7 @@ class NineMangaCom(NineHelper, Std):
         items = []
         for i in result:
             u = self.re.search(r'(/chapter/.*/\d+)\.html', i.get('href'))
-            items.append('{}{}-10-1.html'.format(self.domain, u.group(1)))
+            items.append(f'{self.domain}{u.group(1)}-10-1.html')
         return items
 
     def get_files_on_page(self, content):

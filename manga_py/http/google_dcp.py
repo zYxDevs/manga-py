@@ -18,14 +18,8 @@ class GoogleDCP:
 
     def _build_header(self):
         timestamp = int(time.time())
-        md5 = BaseLib.md5('{}{}{}'.format(timestamp, self.authkey, timestamp))
-        return 'Chrome-Proxy: ps={}-{}-{}-{}, sid={}, c=win, b=3029, p=110'.format(
-            int(time.time()),
-            self.randint(),
-            self.randint(),
-            self.randint(),
-            BaseLib.str2hex(md5.hexdigest())
-        )
+        md5 = BaseLib.md5(f'{timestamp}{self.authkey}{timestamp}')
+        return f'Chrome-Proxy: ps={int(time.time())}-{self.randint()}-{self.randint()}-{self.randint()}, sid={BaseLib.str2hex(md5.hexdigest())}, c=win, b=3029, p=110'
 
     def set_proxy(self):
         self.http.proxies['http'] = self.host

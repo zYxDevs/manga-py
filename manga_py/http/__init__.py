@@ -36,7 +36,7 @@ class Http(Request):
             self_val = getattr(self, name)
             _type = type(self_val)
             if self_val is not None and not isinstance(value, _type):
-                raise AttributeError('{} type not {}'.format(name, _type))
+                raise AttributeError(f'{name} type not {_type}')
             setattr(self, name, value)
 
     def _download(self, file_name, url, method):
@@ -45,10 +45,7 @@ class Http(Request):
             now_try_count += 1
             response = self.requests(url, method=method, timeout=60, allow_redirects=True)
             if response.status_code >= 400:
-                error('\nERROR! Code {}\nUrl: {}\n'.format(
-                    response.status_code,
-                    url,
-                ))
+                error(f'\nERROR! Code {response.status_code}\nUrl: {url}\n')
                 sleep(2)
                 if response.status_code == 403:
                     response = requests.request(method=method, url=url, timeout=60, allow_redirects=True)
@@ -83,7 +80,7 @@ class Http(Request):
             mode = 'Retry'
             if r >= self.count_retries:
                 mode = 'Skip image'
-                warning('%s: %s' % (mode, url))
+                warning(f'{mode}: {url}')
             callable(callback) and callback(text=mode)
         return False
 
@@ -97,7 +94,7 @@ class Http(Request):
             name = basename(remove_file_query_params(url))
             dst = path_join(get_temp_path(), name)
 
-        info('Downloading ({}): {}'.format(idx, url))
+        info(f'Downloading ({idx}): {url}')
 
         result = self._download_one_file_helper(url, dst, callback, success_callback, callback_args)
         if result is None and not self.mute:
@@ -110,9 +107,7 @@ class Http(Request):
     def normalize_uri(self, uri, referer=None):
         if not referer:
             referer = self.referer
-        if isinstance(uri, str):
-            return normalize_uri(uri.strip(), referer)
-        return uri
+        return normalize_uri(uri.strip(), referer) if isinstance(uri, str) else uri
 
     def multi_download_get(self, urls, dst: str = None, callback: callable = None):
         threading = MultiThreads()

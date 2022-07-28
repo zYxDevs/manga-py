@@ -736,6 +736,6 @@ def get_provider(url):
     fromlist = 'manga_py.providers'
     for i in providers_list:
         if __check_provider(providers_list[i], url):
-            provider = importlib.import_module('%s.%s' % (fromlist, i))
+            provider = importlib.import_module(f'{fromlist}.{i}')
             return provider.main
     return False

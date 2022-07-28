@@ -25,7 +25,7 @@ class HGameCGCom(Provider, Std):
         pages_count = 0
         if pages:
             pages_count = self.re.search('/start-(\d+)', pages[-1].get('href')).group(1)
-            pages_count = int(int(pages_count) / self.__img_count)
+            pages_count = int(pages_count) // self.__img_count
         return range(1, pages_count + 2)[::-1]
 
     def __tmb_to_img(self, tmbs):

@@ -28,7 +28,7 @@ class ReaderIMangaScansOrg(Provider, Std):
             items = self.json.loads(items.group(1))
             url = items[0]
             del items[0]
-            return ['{}/{}{}'.format(self.domain, url, i) for i in items]
+            return [f'{self.domain}/{url}{i}' for i in items]
         except Exception:
             return []
 

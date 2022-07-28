@@ -15,8 +15,7 @@ class LoliBooruMoe(DanbooruDonmaiUs, Std):
 
     def get_chapters(self):  # pragma: no cover
         if self._is_tag:
-            pages = self._elements('#paginator .pagination > a')
-            if pages:
+            if pages := self._elements('#paginator .pagination > a'):
                 count = self.re.search(r'\bpage=(\d+)', pages[-2].get('href')).group(1)
                 max_page = int(count)
                 if max_page > 1001:
@@ -26,22 +25,13 @@ class LoliBooruMoe(DanbooruDonmaiUs, Std):
         return [1]
 
     def _tag_images(self):  # pragma: no cover
-        url = '{}/post?tags={}&page={}'.format(
-            self.domain,
-            self._manga_name,
-            self.chapter,
-        )
+        url = f'{self.domain}/post?tags={self._manga_name}&page={self.chapter}'
         parser = self.html_fromstring(url)
         return self._images_helper(parser, '#post-list-posts a.directlink', 'href')
 
     def _post_image(self, url):  # pragma: no cover
-        if isinstance(url, str):
-            parser = self.html_fromstring(url)
-        else:
-            parser = url
-
-        full_size = parser.cssselect('.status-notice a.highres-show')
-        if full_size:
+        parser = self.html_fromstring(url) if isinstance(url, str) else url
+        if full_size := parser.cssselect('.status-notice a.highres-show'):
             return [full_size[0].get('href')]
         return [parser.cssselect('#image')[0].get('src')]
 

@@ -28,8 +28,11 @@ class SenMangaCom(Provider, Std):
         pages = self._first_select_options(parser, 'select[name="page"]')
         src = parser.cssselect('#picture')[0].get('src')
         images = [src]
-        for i in pages:
-            images.append(self.re.sub(r'\d+\?token', i.get('value') + '?token', src))
+        images.extend(
+            self.re.sub(r'\d+\?token', i.get('value') + '?token', src)
+            for i in pages
+        )
+
         return images
 
     def prepare_cookies(self):

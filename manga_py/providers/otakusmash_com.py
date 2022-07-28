@@ -7,7 +7,7 @@ class OtakuSmashCom(Provider, Std):
     prefix = '/'
 
     def get_chapter_index(self) -> str:
-        selector = self.selector + '/([^/]+)'
+        selector = f'{self.selector}/([^/]+)'
         idx = self.re.search(selector, self.chapter)
         return '-'.join(idx.group(3).split('.'))
 
@@ -23,7 +23,7 @@ class OtakuSmashCom(Provider, Std):
         parser = self.document_fromstring(self.content)
         items = self._first_select_options(parser, '.pager select[name="chapter"]', False)
         url = self._get_manga_url()
-        return ['{}{}/'.format(url, i.get('value')) for i in items]
+        return [f"{url}{i.get('value')}/" for i in items]
 
     def get_files(self):
         chapter = self.chapter
@@ -34,13 +34,13 @@ class OtakuSmashCom(Provider, Std):
         _img and images.append(_img)
         self.log('Get pages... Please, wait')
         for page in pages:
-            parser = self.html_fromstring('{}{}/'.format(chapter, page.get('value')))
+            parser = self.html_fromstring(f"{chapter}{page.get('value')}/")
             _img = self._get_image(parser)
             _img and images.append(_img)
         return images
 
     def _get_manga_url(self):
-        return '{}/{}{}/'.format(self.domain, self.prefix, self.manga_name)
+        return f'{self.domain}/{self.prefix}{self.manga_name}/'
 
     def _get_image(self, parser):
         image = parser.cssselect('a > img.picture')
@@ -50,10 +50,7 @@ class OtakuSmashCom(Provider, Std):
         if image[0] == '/':
             return self.normalize_uri(image)
         base_uri = parser.cssselect('base')
-        if len(base_uri):
-            base_uri = base_uri[0].get('href')
-        else:
-            base_uri = self.chapter
+        base_uri = base_uri[0].get('href') if len(base_uri) else self.chapter
         return base_uri + image
 
     def get_cover(self):

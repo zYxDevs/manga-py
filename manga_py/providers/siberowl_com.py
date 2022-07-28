@@ -22,11 +22,10 @@ class SiberOwlCom(Provider, Std):
             re.search(self.content).group(1),
             'a'
         )
-        return ['{}/mangas/{}/{}'.format(
-            self.domain,
-            self.manga_name,
-            i.get('href')
-        ) for i in elements]
+        return [
+            f"{self.domain}/mangas/{self.manga_name}/{i.get('href')}"
+            for i in elements
+        ]
 
     def get_files(self):
         content = self.http_get(self.chapter)
@@ -35,14 +34,11 @@ class SiberOwlCom(Provider, Std):
         if not items:
             return []
         items = self.json.loads(self.re.sub(r'(.+)",\]', r'\1"]', items))
-        return ['{}{}'.format(self.domain, i) for i in items]
+        return [f'{self.domain}{i}' for i in items]
 
     def get_cover(self) -> str:
         re = self.re.compile(r'imageUrl\s*=\s*"(.+)";')
-        return '{}{}'.format(
-            self.domain,
-            re.search(self.content).group(1)
-        )
+        return f'{self.domain}{re.search(self.content).group(1)}'
 
     def book_meta(self) -> dict:
         # todo meta

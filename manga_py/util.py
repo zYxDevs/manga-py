@@ -41,13 +41,14 @@ def _run_util(args):
     _info.start()
     Cli(args, _info).start()
 
-    if args.get('print_json', False):
-        _info = dumps(
+    _info = (
+        dumps(
             _info.get(),
             indent=2,
         )
-    else:
-        _info = []
+        if args.get('print_json', False)
+        else []
+    )
 
     return _info
 

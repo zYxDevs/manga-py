@@ -17,7 +17,7 @@ class AComicsRu(Provider, Std):
         return self._get_name(r'\.\w{2,7}/~([^/]+)')
 
     def get_chapters(self):
-        return ['~' + self.manga_name]
+        return [f'~{self.manga_name}']
 
     def get_files(self):
         pages_max = self.text_content_full(self.content, 'span.issueNumber').split('/')[1]

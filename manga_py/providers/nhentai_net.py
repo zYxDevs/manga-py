@@ -15,10 +15,10 @@ class nHentaiNet(HentaiFoxCom):
         imgs = self.re.search(r'gallery.+?JSON\.parse\("(\{.+\})', content)
         imgs = self.json.loads(imgs.group(1).encode().decode('unicode_escape'))
         idx = imgs.get('media_id')
-        images = []
-        for n, i in enumerate(imgs.get('images', {}).get('pages', [])):
-            images.append('{}{}/{}.{}'.format(self._cdn, idx, n + 1, self.__ext.get(i.get('t'))))
-        return images
+        return [
+            f"{self._cdn}{idx}/{n + 1}.{self.__ext.get(i.get('t'))}"
+            for n, i in enumerate(imgs.get('images', {}).get('pages', []))
+        ]
 
     def get_cover(self) -> str:
         return self._cover_from_content('#cover img', 'data-src')

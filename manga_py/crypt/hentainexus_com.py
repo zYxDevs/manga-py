@@ -54,20 +54,20 @@ class HentaiNexusComCrypt(BaseLib):
     def _step_1(self, buff) -> int:
         c = 0
 
-        for index in range(0, 64):
+        for index in range(64):
             c = c ^ buff[index]
 
-            for week_index in range(0, 8):
+            for _ in range(8):
                 c = c >> 1 ^ 12 if c & 1 else c >> 1
 
         return c & 7
 
     def _step_2(self) -> list:
-        return list(range(0, 256))
+        return list(range(256))
 
     def _step_3(self, buff, index: list) -> list:
         key = 0
-        for i in range(0, 256):
+        for i in range(256):
             key = (key + index[i] + buff[i % 64]) % 256
             index[i], index[key] = index[key], index[i]
 

@@ -13,18 +13,18 @@ class TonariNoYjJp:
     def __init__(self, provider: Provider):
         self.provider = provider
         self.temp_path = get_temp_path('__image_matrix{}.png')
-        matrix = {}
-        for i in range(self.div_num * self.div_num):
-            matrix[i] = (i % self.div_num) * self.div_num + int(i / self.div_num)
+        matrix = {
+            i: (i % self.div_num) * self.div_num + int(i / self.div_num)
+            for i in range(self.div_num * self.div_num)
+        }
+
         self.matrix = matrix
 
     def _chapter_api_content(self, idx) -> dict:
         api = '{}/api/viewer/readable_products?current_readable_product_id={}&' \
               'number_since=99&number_until=-1&read_more_num=100&type=episode'
         content = self.provider.http_get(api.format(self.provider.domain, idx))
-        if content[0] == '{':
-            return self.provider.json.loads(content)
-        return {}
+        return self.provider.json.loads(content) if content[0] == '{' else {}
 
     def _check_need_next_chapter(self, next_url):
         if next_url:
@@ -36,8 +36,9 @@ class TonariNoYjJp:
     def get_chapters(self, idx) -> list:
         content = self._chapter_api_content(idx)
         items = self.provider.document_fromstring(content.get('html', '<html></html>'), '.series-episode-list-thumb')
-        need_more = self._check_need_next_chapter(content.get('nextUrl', None))
-        if need_more:
+        if need_more := self._check_need_next_chapter(
+            content.get('nextUrl', None)
+        ):
             items += self.get_chapters(content.get('nextUrl'))
         re = self.provider.re.compile(r'/episode-thumbnail/(\d+)')
         return [re.search(i.get('src')).group(1) for i in items]

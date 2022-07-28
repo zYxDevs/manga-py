@@ -26,8 +26,7 @@ class NineHelper(Provider, metaclass=ABCMeta):
         return self.re.search('://[^/]+/(.+)', url).group(1)
 
     def get_img_server(self, content):
-        server = self.re.search(r'img_url\s?=\s?"([^"]+)', content)
-        if server:
+        if server := self.re.search(r'img_url\s?=\s?"([^"]+)', content):
             return server.group(1)
         return self.img_server
 
@@ -39,7 +38,7 @@ class NineHelper(Provider, metaclass=ABCMeta):
         pic_url = self.get_img_server(content)
         for i in result:
             src = self.parse_img_uri(i.get('href'))
-            images.append('{}/{}'.format(pic_url, src))
+            images.append(f'{pic_url}/{src}')
         return images
 
     def _get_page_content(self, url):

@@ -16,7 +16,7 @@ class AnimeXtremistCom(Provider, Std):
         return self._get_content('{}%s{}/' % self.prefix)
 
     def get_manga_name(self) -> str:
-        return self._get_name(r'{}([^/]+)'.format(self.prefix))
+        return self._get_name(f'{self.prefix}([^/]+)')
 
     def get_chapters(self):
         ch = self.helper.get_chapters()

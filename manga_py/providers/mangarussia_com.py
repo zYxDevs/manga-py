@@ -16,7 +16,7 @@ class MangaRussiaCom(Provider, Std):
         return '-'.join(result.groups())
 
     def get_content(self):
-        url = '{}/manga/{}.html'.format(self.domain, quote(self.manga_name))
+        url = f'{self.domain}/manga/{quote(self.manga_name)}.html'
         self._storage['referer'] = self.path_url(self.get_url())
         return self.http_get(url)
 
@@ -25,11 +25,9 @@ class MangaRussiaCom(Provider, Std):
 
     def get_manga_name(self) -> str:
         url = self.get_url()
-        if self.re.search('/manga/', url):
-            name = self.__name(url)
-        else:
+        if not self.re.search('/manga/', url):
             url = self.html_fromstring(url, '.sitemaplist .red', 0).get('href')
-            name = self.__name(url)
+        name = self.__name(url)
         return unquote(name)
 
     def get_chapters(self):

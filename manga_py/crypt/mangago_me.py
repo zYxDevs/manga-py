@@ -59,10 +59,7 @@ class MangaGoMe(BaseLib):
                 ik = values[k]
         matrix = {}
         for n, i in enumerate(ik.split('a')):
-            if len(i) > 0:
-                m = int(i)
-            else:
-                m = 0
+            m = int(i) if len(i) > 0 else 0
             matrix[n] = m
         puzzle = Puzzle(9, 9, matrix, 0)
         puzzle.de_scramble(_path, _dst)

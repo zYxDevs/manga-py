@@ -42,9 +42,7 @@ class Http:
     def post(self, url, headers: dict = None, data: dict = None, cookies: dict = None, **kwargs) -> Response:
         cookies = [{'name': k, 'value': cookies[k]} for k in cookies] if cookies is not None else []
         post_data = data or {}
-        encoded_data = []
-        for k in post_data:
-            encoded_data.append(f'{k}={post_data[k]}')
+        encoded_data = [f'{k}={post_data[k]}' for k in post_data]
         headers = headers or {}
         headers.setdefault('Content-Type', 'application/x-www-form-urlencoded')
         return post(self.solver_url, json={

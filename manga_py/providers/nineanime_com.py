@@ -6,10 +6,9 @@ class NineAnimeCom(Provider, Std):
     _ch = None
 
     def get_chapter_index(self) -> str:
-        ch_result = self._ch.search(self.chapter)
-        if ch_result:
+        if ch_result := self._ch.search(self.chapter):
             return ch_result.group(1).replace('_', '-')
-        return '000-' + self.chapter_id
+        return f'000-{self.chapter_id}'
 
     def get_content(self):
         return self._get_content('{}/manga/{}.html?waring=1')

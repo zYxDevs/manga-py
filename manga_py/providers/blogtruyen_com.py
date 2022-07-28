@@ -6,7 +6,7 @@ class BlogTruyenCom(Provider, Std):
 
     def get_chapter_index(self) -> str:
         idx = self.re.search(r'\.\w{2,7}/c(\d+)/', self.chapter)
-        return '{}-{}'.format(self.chapter_id, idx.group(1))
+        return f'{self.chapter_id}-{idx.group(1)}'
 
     def get_content(self):
         url = self._test_main_url(self.get_url())

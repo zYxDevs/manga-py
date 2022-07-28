@@ -32,10 +32,7 @@ class MangaHubIo(Provider, Std):
         pages = content.get('data', {}).get('chapter', {}).get('pages', '{}')
         pages = self.json.loads(pages)
 
-        images = []
-        for p in pages:
-            images.append('{}{}'.format(self._cdn, pages[p]))
-        return images
+        return [f'{self._cdn}{pages[p]}' for p in pages]
 
     def get_cover(self) -> str:
         return self._cover_from_content('.row > div > img.img-responsive')

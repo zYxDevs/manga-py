@@ -32,14 +32,16 @@ class TestMatrix(unittest.TestCase):
         )
 
     def test_jpg(self):
-        file_src = root_path + '/mosaic/tonarinoyj_jp_orig.jpg'  # tonarinoyj.jp  image
-        file_ref = root_path + '/mosaic/tonarinoyj_jp_reference.jpg'
-        file_dst = root_path + '/temp/tonarinoyj_jp_mosaic.jpg'
+        file_src = f'{root_path}/mosaic/tonarinoyj_jp_orig.jpg'
+        file_ref = f'{root_path}/mosaic/tonarinoyj_jp_reference.jpg'
+        file_dst = f'{root_path}/temp/tonarinoyj_jp_mosaic.jpg'
 
         div_num = 4
-        matrix = {}
-        for i in range(div_num * div_num):
-            matrix[i] = (i % div_num) * div_num + int(i / div_num)
+        matrix = {
+            i: (i % div_num) * div_num + int(i / div_num)
+            for i in range(div_num**2)
+        }
+
         p = Puzzle(div_num, div_num, matrix, 8)
         p.need_copy_orig = True
         p.de_scramble(file_src, file_dst)
@@ -53,14 +55,16 @@ class TestMatrix(unittest.TestCase):
         self.assertTrue(deviation < 10)
 
     def test_png(self):
-        file_src = root_path + '/mosaic/tonarinoyj_jp_orig.png'  # tonarinoyj.jp  image
-        file_ref = root_path + '/mosaic/tonarinoyj_jp_reference.png'
-        file_dst = root_path + '/temp/tonarinoyj_jp_mosaic.png'
+        file_src = f'{root_path}/mosaic/tonarinoyj_jp_orig.png'
+        file_ref = f'{root_path}/mosaic/tonarinoyj_jp_reference.png'
+        file_dst = f'{root_path}/temp/tonarinoyj_jp_mosaic.png'
 
         div_num = 4
-        matrix = {}
-        for i in range(div_num * div_num):
-            matrix[i] = (i % div_num) * div_num + int(i / div_num)
+        matrix = {
+            i: (i % div_num) * div_num + int(i / div_num)
+            for i in range(div_num**2)
+        }
+
         p = Puzzle(div_num, div_num, matrix, 8)
         p.need_copy_orig = True
         p.de_scramble(file_src, file_dst)
@@ -76,7 +80,7 @@ class TestMatrix(unittest.TestCase):
     def test_sunday_webry_com(self):
         decoder = sunday_webry_com.SundayWebryCom()
 
-        with open(root_path + '/mosaic/sunday_reference_matrix.json') as f:
+        with open(f'{root_path}/mosaic/sunday_reference_matrix.json') as f:
             result = json.loads(f.read())
 
         n = 0
@@ -102,9 +106,9 @@ class TestMatrix(unittest.TestCase):
         decoder = sunday_webry_com.SundayWebryCom()
         puzzle = sunday_webry_com.MatrixSunday()
 
-        src = root_path + '/mosaic/sunday_orig.jpg'
-        file_dst = root_path + '/temp/sunday_mosaic2.jpg'
-        file_ref = root_path + '/mosaic/sunday_reference.jpg'
+        src = f'{root_path}/mosaic/sunday_orig.jpg'
+        file_dst = f'{root_path}/temp/sunday_mosaic2.jpg'
+        file_ref = f'{root_path}/mosaic/sunday_reference.jpg'
 
         result_py2 = decoder.solve_by_img(src, 64, 64, 2)
 
@@ -118,19 +122,14 @@ class TestMatrix(unittest.TestCase):
         self.assertTrue(deviation < 10)
 
     def test_solve_plus_comico_js(self):
-        src = root_path + '/mosaic/plus_comico_jp_orig.jpg'
-        file_dst = root_path + '/temp/plus_comico_jp_mosaic.jpg'
-        file_ref = root_path + '/mosaic/plus_comico_jp_reference.jpg'
+        src = f'{root_path}/mosaic/plus_comico_jp_orig.jpg'
+        file_dst = f'{root_path}/temp/plus_comico_jp_mosaic.jpg'
+        file_ref = f'{root_path}/mosaic/plus_comico_jp_reference.jpg'
 
         _matrix = '3,14,5,8,10,12,4,2,1,6,15,13,7,11,0,9'.split(',')
 
         div_num = 4
-        matrix = {}
-        n = 0
-        for i in _matrix:
-            matrix[int(i)] = n
-            n += 1
-
+        matrix = {int(i): n for n, i in enumerate(_matrix)}
         p = Puzzle(div_num, div_num, matrix, 8)
         p.need_copy_orig = True
         p.de_scramble(src, file_dst)
@@ -201,9 +200,9 @@ class TestMatrix(unittest.TestCase):
     def test_solve_viz_com(self):
         deviations = []
         for i in range(7):
-            src_path = root_path + '/mosaic/viz/index{}.jfif'.format(i)
-            ref_path = root_path + '/temp/canvas{}.png'.format(i)
-            solved_path = root_path + '/mosaic/viz/canvas{}.png'.format(i)
+            src_path = root_path + f'/mosaic/viz/index{i}.jfif'
+            ref_path = root_path + f'/temp/canvas{i}.png'
+            solved_path = root_path + f'/mosaic/viz/canvas{i}.png'
             ref = viz_com.solve(src_path, {'width': 800, 'height': 1200})
             ref.save(ref_path)
             solved = PilImage.open(solved_path)

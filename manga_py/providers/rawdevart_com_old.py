@@ -28,10 +28,14 @@ class RawDevArtComOld(Provider, Std):
                 return []
 
             manga_id = holders[0].get('data-id')
-            items_content = requests.post('{}/wp-admin/admin-ajax.php'.format(self.domain), data={
-                'action': 'manga_get_chapters',
-                'manga': manga_id,
-            }).text
+            items_content = requests.post(
+                f'{self.domain}/wp-admin/admin-ajax.php',
+                data={
+                    'action': 'manga_get_chapters',
+                    'manga': manga_id,
+                },
+            ).text
+
             items = self._elements('.wp-manga-chapter > a', items_content)
 
         return items
@@ -42,7 +46,7 @@ class RawDevArtComOld(Provider, Std):
 
     def get_cover(self) -> str:
         data_src = self._cover_from_content('.summary_image img.img-responsive', 'data-src')
-        if '' != data_src:
+        if data_src != '':
             return data_src
         return self._cover_from_content('.summary_image img.img-responsive')
 

@@ -10,7 +10,7 @@ class KuMangaCom(Provider, Std):
 
     def get_content(self):
         url = self.re.search(r'(.+\.\w{2,7}/manga/\d+)', self.get_url())
-        return self.http_get('%s/' % url.group(1))
+        return self.http_get(f'{url.group(1)}/')
 
     def get_manga_name(self) -> str:
         selector = r'pagination\(\d+,\'(.+)\',\'pagination\''
@@ -21,17 +21,13 @@ class KuMangaCom(Provider, Std):
         items = parser.cssselect('.table h4.title > a')
         chapters = []
         for i in items:
-            c = '{}/{}'.format(self.domain, i.get('href'))
+            c = f"{self.domain}/{i.get('href')}"
             chapters.append(c.replace('/c/', '/leer/'))
         return chapters
 
     def _url_helper(self):
         idx = self.re.search(r'\.\w{2,7}/manga/(\d+)', self.get_url())
-        return '{}/manga/{}/p/%d/{}'.format(
-            self.domain,
-            idx.group(1),
-            self.manga_name
-        )
+        return f'{self.domain}/manga/{idx.group(1)}/p/%d/{self.manga_name}'
 
     def get_chapters(self):
         selector = r'\'pagination\',\d+,(\d+),(\d+)'

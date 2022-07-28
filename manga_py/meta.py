@@ -3,7 +3,7 @@ license_type = 'MIT'
 email = 'sttv-pc@mail.ru'
 version = '1.33.3'
 repo_name = 'manga-py/manga-py'
-repo_url = 'https://github.com/%s' % repo_name
+repo_url = f'https://github.com/{repo_name}'
 
 __all__ = [
     'author',

@@ -20,9 +20,7 @@ class HitMangaEu(Provider, Std):
 
     def get_manga_name(self) -> str:
         url = self.get_url()
-        re = '{}/([^/]+)'
-        if ~url.find('/mangas/'):
-            re = '{}/mangas/([^/]+)'
+        re = '{}/mangas/([^/]+)' if ~url.find('/mangas/') else '{}/([^/]+)'
         re = re.format(self.postfix)
         return self.re.search(re, url).group(1)
 

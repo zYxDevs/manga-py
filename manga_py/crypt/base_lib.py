@@ -90,7 +90,7 @@ class BaseLib:
         :param int_list: list
         :return: str
         """
-        base_frm = '{}B'.format(len(int_list))
+        base_frm = f'{len(int_list)}B'
         return pack(base_frm, *int_list)
 
     @staticmethod

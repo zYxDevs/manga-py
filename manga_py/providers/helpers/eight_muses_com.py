@@ -9,9 +9,11 @@ class EightMusesCom:
         self._n = provider.http_normal().normalize_uri
 
     def is_images_page(self, parser) -> bool:
-        if not parser:
-            return False
-        return self.provider.re.search(r'/\d+$', parser[0].get('href')) is not None
+        return (
+            self.provider.re.search(r'/\d+$', parser[0].get('href')) is not None
+            if parser
+            else False
+        )
 
     def parser(self, url, selector):
         return self.provider.html_fromstring(self._n(url), selector)

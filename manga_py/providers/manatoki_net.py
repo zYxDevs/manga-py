@@ -9,12 +9,7 @@ _RE_DISPLAY_NONE_CLASS = compile(r'.(\w+) { display: none; }')
 
 
 def html_encoder(data: list):
-    out = ''
-    for i in ''.join(data).split('.'):
-        if i == '':
-            continue
-        out += chr(int(i, 16))
-    return out
+    return ''.join(chr(int(i, 16)) for i in ''.join(data).split('.') if i != '')
 
 
 class ManaTokiNet(Provider, Std):

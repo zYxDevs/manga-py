@@ -38,7 +38,7 @@ class MangaParkOrg(Provider, Std):
             for n, variant in enumerate(variants):
                 text = variant.cssselect('.flag + a.ml-1')[0].text_content_full()  # type: str
 
-                if ~text.find('[' + language + ']'):
+                if ~text.find(f'[{language}]'):
                     return n + 1
 
         return None
@@ -98,8 +98,7 @@ class MangaParkOrg(Provider, Std):
     def get_files(self):
         re = self.re.compile(r'images\s*=\s*(\[.+\]);')
         content = self.http_get(self.chapter[1])
-        items = self.json.loads(re.search(content).group(1))
-        return items
+        return self.json.loads(re.search(content).group(1))
 
     def get_cover(self) -> str:
         return self._cover_from_content('.order-0 > img')

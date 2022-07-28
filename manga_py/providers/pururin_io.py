@@ -41,12 +41,12 @@ class PururinIo(Provider, Std):
         return images
 
     def get_files(self):
-        items = self._elements('.col-md-10 .well-pururin > div[class*="preview"] > a')
-        if items:
+        if items := self._elements(
+            '.col-md-10 .well-pururin > div[class*="preview"] > a'
+        ):
             url = self.normalize_uri(items[0].get('href'))
             content = self.http_get(url)
-            images = self.re.search(r'chapters\s*=\s*(\{.+\})\s*;', content)
-            if images:
+            if images := self.re.search(r'chapters\s*=\s*(\{.+\})\s*;', content):
                 return self._images(images.group(1))
         return []
 

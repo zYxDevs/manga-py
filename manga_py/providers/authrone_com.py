@@ -23,9 +23,9 @@ class AuthroneCom(MangaOnlineToday, Std):
     def get_chapters(self):  # need sorting chapters: /manga/love_stage/
         items = self._elements(self._ch_selector)
         pages = self._elements('ul.lst + ul.pgg li:last-child > a')
-        patern = r'list/(\d+)/'
         if pages and len(pages):
             link = pages[-1].get('href')
+            patern = r'list/(\d+)/'
             page = self.re.search(patern, link).group(1)
             for i in range(2, int(page) + 1):
                 page_link = self.re.sub(patern, 'list/%d/' % i, link)

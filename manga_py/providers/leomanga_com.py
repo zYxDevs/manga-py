@@ -18,16 +18,13 @@ class LeoMangaCom(Provider, Std):
     def _get_first_href(self, parser):
         n = self.normalize_uri
         url = n(parser[0].get('href'))
-        select0 = self.html_fromstring(url, '.list-group .cap-option')
-        if select0:
+        if select0 := self.html_fromstring(url, '.list-group .cap-option'):
             return n(select0[0].get('href'))
         return None
 
     def get_chapters(self):
-        chapter = self.document_fromstring(self.content, '.caps-list a')
-        if chapter:
-            url = self._get_first_href(chapter)
-            if url:
+        if chapter := self.document_fromstring(self.content, '.caps-list a'):
+            if url := self._get_first_href(chapter):
                 selector = '.viewcap-info select.form-control'
                 parser = self.html_fromstring(url)
                 options = self._first_select_options(parser, selector)

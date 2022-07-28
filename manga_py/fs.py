@@ -17,7 +17,7 @@ def mark_as_hidden(_path: str):
 
 
 def get_temp_path(*args) -> str:
-    temp = 'temp_%s' % getpid()
+    temp = f'temp_{getpid()}'
     return path_join(tempfile.gettempdir(), __dir_name__, temp, *args)
 
 
@@ -84,9 +84,7 @@ def unlink(_path, allow_not_empty=False):
 
 
 def os_stat(_path):
-    if is_file(_path):
-        return Path(_path).stat()
-    return None
+    return Path(_path).stat() if is_file(_path) else None
 
 
 def file_size(_path):
@@ -95,10 +93,7 @@ def file_size(_path):
     :return:
     :rtype: int
     """
-    data = os_stat(_path)
-    if data:
-        return data.st_size
-    return None
+    return data.st_size if (data := os_stat(_path)) else None
 
 
 def rename(_from, _to):
@@ -168,8 +163,8 @@ def _disc_stat_win(_path) -> dict:
     if ret == 0:
         fun = ctypes.windll.kernel32.GetDiskFreeSpaceExW
         ret = fun(_path, ctypes.byref(_), ctypes.byref(total), ctypes.byref(free))
-        if ret == 0:
-            raise ctypes.WinError()
+    if ret == 0:
+        raise ctypes.WinError()
     used = total.value - free.value
     return {'total': total.value, 'used': used, 'free': free.value}
 
@@ -201,12 +196,12 @@ def check_free_space(_path: str, min_size: int = 100, percent: bool = False) -> 
         _free = _stat['free'] / _stat['total']
         if (_free * 100) < min_size:
             return False
-        return True
     else:
         _free = _stat['free'] / (2 << 19)  # 1Mb
         if _free < min_size:
             return False
-        return True
+
+    return True
 
 
 def touch(_path: str, mode=0o666, exist_ok=True):

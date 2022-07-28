@@ -46,10 +46,10 @@ class LeitorNet(Provider, Std):
                 self.domain, i, self.__idx
             ), headers={'x-requested-with': 'XMLHttpRequest'}) as resp:
                 content = resp.json()
-            chapters = content.get('chapters', False)
-            if not chapters:
+            if chapters := content.get('chapters', False):
+                items += chapters
+            else:
                 break
-            items += chapters
         return self.__morph_chapters(items)
 
     def get_files(self):
@@ -64,11 +64,7 @@ class LeitorNet(Provider, Std):
         return images.get('images', {})
 
     def get_cover(self) -> str:
-        url = '{}/manga/{}/{}'.format(
-            self.domain,
-            self.manga_name,
-            self.__idx
-        )
+        url = f'{self.domain}/manga/{self.manga_name}/{self.__idx}'
         image = self.html_fromstring(url, '.cover-image')
         if image and len(image):
             return self.parse_background(image[0])

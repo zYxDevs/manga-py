@@ -12,7 +12,7 @@ class HentaiFoxCom(Provider, Std):
         return self.get_chapter_index()
 
     def get_chapter_index(self) -> str:
-        return self._archive_prefix + 'archive'
+        return f'{self._archive_prefix}archive'
 
     def get_content(self):
         idx = self._get_name(self._idx_re)

@@ -21,11 +21,11 @@ class ArchiveName(metaclass=ABCMeta):
             return self.__normal_name_list(idx)
         if isinstance(idx, dict):
             return self.__normal_name_dict(idx)
-        raise DeprecationWarning('Wrong arc name type: %s' % type(idx))
+        raise DeprecationWarning(f'Wrong arc name type: {type(idx)}')
 
     def __normal_name_dict(self, idx: dict) -> str:
-        vol = idx.get('vol', None)
-        ch = idx.get('ch', None)
+        vol = idx.get('vol')
+        ch = idx.get('ch')
         result = ''
         if vol:
             if isinstance(vol, str):
@@ -34,14 +34,14 @@ class ArchiveName(metaclass=ABCMeta):
         if ch:
             if vol:
                 result += '-'
-            result += 'ch_' + self.__fill(ch)
+            result += f'ch_{self.__fill(ch)}'
 
         if self._with_manga_name:
             name = self._params.get('name', '')
             if not len(name):
                 name = self.manga_name
 
-            result = '%s-%s' % (name, result)
+            result = f'{name}-{result}'
 
         return result
 

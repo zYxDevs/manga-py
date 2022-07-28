@@ -16,18 +16,14 @@ class MangaLifeUs(Provider, Std):
 
         chapter = chapter.groups()
 
-        return '{}-{}'.format(
-            chapter[0],
-            1 if chapter[1] is None else chapter[1],
-        )
+        return f'{chapter[0]}-{1 if chapter[1] is None else chapter[1]}'
 
     def get_content(self):
         return self._get_content('{}/manga/{}')
 
     def get_manga_name(self) -> str:
         uri = self.get_url()
-        test = self.re.search(r'\.\w{2,7}/read-online/', uri)
-        if test:
+        if test := self.re.search(r'\.\w{2,7}/read-online/', uri):
             uri = self.html_fromstring(uri, 'a.list-link', 0).get('href')
         return self.re.search(r'(?:\.\w{2,7})?/manga/([^/]+)', uri).group(1)
 
@@ -35,12 +31,10 @@ class MangaLifeUs(Provider, Std):
         raw_chapters = self.re.search(r'vm.Chapters\s*=\s*(\[\{.+\}\])', self.content).group(1)
         chapters = self.json.loads(raw_chapters)
 
-        return ['{}/read-online/{}-chapter-{}-index-{}.html'.format(
-            self.domain,
-            self.manga_name,
-            self.__ch(ch['Chapter']),
-            ch['Chapter'][0],  # example mangasee123.com/manga/Tower-Of-God
-        ) for ch in chapters]
+        return [
+            f"{self.domain}/read-online/{self.manga_name}-chapter-{self.__ch(ch['Chapter'])}-index-{ch['Chapter'][0]}.html"
+            for ch in chapters
+        ]
 
     def _chapters_html(self):
         return self._elements('.list a.list-group-item')
@@ -82,7 +76,7 @@ class MangaLifeUs(Provider, Std):
         except AttributeError:
             pass
 
-        content = self.http_get('%s.html' % _chapter)
+        content = self.http_get(f'{_chapter}.html')
 
         try:
             return self._files_js(content)
@@ -92,16 +86,12 @@ class MangaLifeUs(Provider, Std):
     @staticmethod
     def __one_ch(ch):
         chapter = ch[1:-1]
-        if ch[-1] == '0':
-            return chapter
-        return '%s.%s' % (chapter, ch[-1])
+        return chapter if ch[-1] == '0' else f'{chapter}.{ch[-1]}'
 
     @staticmethod
     def __ch(ch):
         n = ch[1:-1].lstrip('0')
-        if ch[-1] != '0':
-            return '%s.%s' % (n, ch[-1])
-        return '{:0>1}'.format(n)
+        return f'{n}.{ch[-1]}' if ch[-1] != '0' else '{:0>1}'.format(n)
 
     def prepare_cookies(self):
         self.http().cookies['FullPage'] = 'yes'

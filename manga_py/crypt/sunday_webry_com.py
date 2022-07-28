@@ -48,10 +48,8 @@ class SundayWebryCom:  # pragma: no cover
         r = element_width
         i = element_height
 
-        y = int(e / r)
-        g = int(t / i)
-        f = e % r
-        b = t % i
+        y, f = divmod(e, r)
+        g, b = divmod(t, i)
         self._result = []
 
         s = y - 43 * n % y
@@ -61,7 +59,7 @@ class SundayWebryCom:  # pragma: no cover
         a = g - 47 * n % g
         if a % g == 0:
             a = (g - 4) % g
-        if 0 == a:
+        if a == 0:
             a = g - 1
 
         self.def1(f, b, s, r, a, i)
@@ -144,9 +142,7 @@ class SundayWebryCom:  # pragma: no cover
 
     @staticmethod
     def _calc_pos_rest(e, t, r, i):
-        m = 0
-        if e >= t:
-            m = r
+        m = r if e >= t else 0
         return e * i + m
 
     @staticmethod

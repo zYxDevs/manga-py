@@ -27,12 +27,12 @@ class TestInitProvider(unittest.TestCase):
         name = '/addr/to/filename'
         self.assertEqual(
             name,
-            fs.remove_file_query_params(name + '?query=params').replace('\\', '/')  # windows os patch
+            fs.remove_file_query_params(f'{name}?query=params').replace('\\', '/'),
         )
 
     def test_file_name_query_remove2(self):
         name = '/addr/to/filename/'
         self.assertEqual(
-            name + 'image.png',
-            fs.remove_file_query_params(name + '?query=params').replace('\\', '/')  # windows os patch
+            f'{name}image.png',
+            fs.remove_file_query_params(f'{name}?query=params').replace('\\', '/'),
         )

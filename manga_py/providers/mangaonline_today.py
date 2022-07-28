@@ -22,17 +22,15 @@ class MangaOnlineToday(Provider, Std):
         images = []
         chapter = self.chapter
         for n in range(1, int(options)):
-            content = self.html_fromstring('{}{}/'.format(chapter, n * 2 + 1))
+            content = self.html_fromstring(f'{chapter}{n * 2 + 1}/')
             img = content.cssselect(self._img_selector)
-            for i in img:
-                images.append(i.get('src'))
+            images.extend(i.get('src') for i in img)
         return images
 
     def get_files(self):
         images = []
         content = self.html_fromstring(self.chapter)
-        img = content.cssselect(self._img_selector)
-        if img:
+        if img := content.cssselect(self._img_selector):
             images = [i.get('src') for i in img]
 
         options = len(content.cssselect('.cbo_wpm_pag')[0].cssselect('option')) / 2 + .5

@@ -7,10 +7,7 @@ from ..crypt.bato_to_crypt import BatoToCrypt
 class BatoTo(Provider, Std):
 
     def get_chapter_index(self) -> str:
-        return '{}-{}'.format(
-            self.chapter_id,
-            self.chapter[1],
-        )
+        return f'{self.chapter_id}-{self.chapter[1]}'
 
     def get_content(self):
         url = self.get_url()

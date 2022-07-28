@@ -20,8 +20,7 @@ class HentaiImageCom(Provider, Std):
         return [b'']
 
     def _pages(self, parser):
-        pages = parser.cssselect('#paginator')
-        if pages:
+        if pages := parser.cssselect('#paginator'):
             href = pages[0].cssselect('span > a')[-1].get('href')
             page = self.re.search(r'/page/(\d+)', href)
             return range(2, int(page.group(1)) + 1)

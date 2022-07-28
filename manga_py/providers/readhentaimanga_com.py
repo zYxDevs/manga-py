@@ -23,8 +23,9 @@ class ReadHentaiMangaCom(Provider, Std):
 
     def get_files(self):
         content = self.http_get(self.chapter)
-        escaped_images = self.re.search(r'_img_lst\s*=.+?unescape\(\'(.+)\'\)', content)
-        if escaped_images:
+        if escaped_images := self.re.search(
+            r'_img_lst\s*=.+?unescape\(\'(.+)\'\)', content
+        ):
             return self.json.loads(unquote_plus(escaped_images.group(1)))
         return []
 

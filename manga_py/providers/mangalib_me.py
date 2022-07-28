@@ -5,10 +5,7 @@ from .helpers.std import Std
 class MangaLibMe(Provider, Std):
 
     def get_chapter_index(self) -> str:
-        return '{}_{}'.format(
-            self.chapter_for_json(),
-            self.chapter['chapter_name']
-        )
+        return f"{self.chapter_for_json()}_{self.chapter['chapter_name']}"
 
     def get_content(self):
         return self._get_content('{}/{}')
@@ -34,16 +31,15 @@ class MangaLibMe(Provider, Std):
         _s = info['servers']
         _server = _s.get('main', _s.get('secondary'))
 
-        return ['{}{}{}'.format(_server, _manga, i['u']) for i in images]
+        return [f"{_server}{_manga}{i['u']}" for i in images]
 
     def get_cover(self):
         return self._cover_from_content('.media-sidebar__cover > img')
 
     def chapter_for_json(self) -> str:
-        return '{}-{}'.format(
-            self.chapter['chapter_volume'] or '',
-            self.chapter['chapter_number'],
-        ).rstrip('-')
+        return f"{self.chapter['chapter_volume'] or ''}-{self.chapter['chapter_number']}".rstrip(
+            '-'
+        )
 
 
 main = MangaLibMe

@@ -14,11 +14,12 @@ class ZingBoxMe(Provider, Std):
     def get_content(self):
         idx = self.re.search(r'/manga/(?:[^/]+/)?(\d+)/', self.get_url())
         data = {
-            'url': '/manga/getBookDetail/{}'.format(idx.group(1)),
+            'url': f'/manga/getBookDetail/{idx.group(1)}',
             'method': 'GET',
             'api': '/mangaheatapi/web',
         }
-        with self.http().post(self.domain + '/api', data=data) as resp:
+
+        with self.http().post(f'{self.domain}/api', data=data) as resp:
             return resp.json()
 
     def get_manga_name(self) -> str:
@@ -29,7 +30,7 @@ class ZingBoxMe(Provider, Std):
 
     def _chapter_url(self):
         idx = self.chapter.get('chapterId', 0)
-        return '/manga/getChapterImages/{}'.format(idx)
+        return f'/manga/getChapterImages/{idx}'
 
     def get_files(self):
         data = {
@@ -37,7 +38,7 @@ class ZingBoxMe(Provider, Std):
             'method': 'GET',
             'api': '/mangaheatapi/web',
         }
-        with self.http().post(self.domain + '/api', data=data) as resp:
+        with self.http().post(f'{self.domain}/api', data=data) as resp:
             return resp.json().get('images', [])
 
     def get_cover(self):

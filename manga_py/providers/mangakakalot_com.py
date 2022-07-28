@@ -18,7 +18,7 @@ class MangaKakalotCom(Provider, Std):
         from sys import stderr
         with get(self.get_url()) as req:
             if req.url != self.get_url():
-                print('New url: %s' % req.url, file=stderr)
+                print(f'New url: {req.url}', file=stderr)
 
             self._params['url'] = req.url
             self._storage['main_content'] = req.text
@@ -35,8 +35,7 @@ class MangaKakalotCom(Provider, Std):
     def get_files(self):
         chapter = self.chapter
         result = self.html_fromstring(chapter, '#vungdoc img, .container-chapter-reader > img')
-        images = [i.get('src') for i in result]
-        return images
+        return [i.get('src') for i in result]
         # check_alternative_server(images, self.__alternative_cdn, headers={
         #     'Referer': chapter,
         #     'Accept': 'image/webp,*/*',

@@ -42,7 +42,7 @@ class MangaPandaCom(Provider, Std):
         if type(images) == str:
             images = self.json.loads(images)  # type: list
 
-        return list(map(lambda x: '{}/{}'.format(self._cdn, images[x]), images))
+        return list(map(lambda x: f'{self._cdn}/{images[x]}', images))
 
     def get_cover(self):
         return self._cover_from_content('.manga-thumb')
@@ -51,7 +51,7 @@ class MangaPandaCom(Provider, Std):
         number = str(self.chapter['number']).replace('.', '-')
         slug = self.chapter['slug']
 
-        return '{}_{}'.format(number, slug)
+        return f'{number}_{slug}'
 
     def _api(self, query: str) -> dict:
         response = self.http().requests(self._api_url, method='post', data={

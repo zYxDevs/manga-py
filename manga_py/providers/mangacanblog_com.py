@@ -51,9 +51,8 @@ class MangaCanBlogCom(Provider, Std):
         result = []
         for i in items:
             url = i.get('href')
-            _ = url.find('-terbaru-1')
-            if _:
-                url = url[:_] + '-terbaru.html'
+            if _ := url.find('-terbaru-1'):
+                url = f'{url[:_]}-terbaru.html'
             result.append(url)
         return result
 

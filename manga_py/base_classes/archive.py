@@ -67,7 +67,7 @@ class Archive:
             return
 
         if self.has_error:
-            warning('Archive %s have missed files' % dst)
+            warning(f'Archive {dst} have missed files')
             self.error_list = []
 
         make_dirs(dirname(dst))
@@ -92,7 +92,6 @@ class Archive:
     def __update_image_extension(self, filename) -> str:
         fn, extension = path.splitext(filename)
         if not self.not_change_files_extension:
-            ext = MangaImage.real_extension(get_temp_path(filename))
-            if ext:
+            if ext := MangaImage.real_extension(get_temp_path(filename)):
                 extension = ext
         return basename(fn + extension)

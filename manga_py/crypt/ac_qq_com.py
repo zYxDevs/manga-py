@@ -18,8 +18,7 @@ def key(data: str, idx: int):
     except IndexError:
         return 0
 
-    position = _site_key.find(char)
-    return position
+    return _site_key.find(char)
 
 
 def _decode(data) -> List[str]:
@@ -59,7 +58,7 @@ class AcQqComCrypt:
     @staticmethod
     def _sub_dict(data):
         try:
-            data = re.search(r'picture.*?(\[{.+}\])', data).group(1)
+            data = re.search(r'picture.*?(\[{.+}\])', data)[1]
             return json.loads(data)
         except Exception as e:
             return {}
@@ -86,7 +85,7 @@ class AcQqComCrypt26:  # v2.6
             _locate = int(RE_INT.search(parts[parts_len]).group(1)) & 255
             _str = _replace.sub('', parts[parts_len])
 
-            _data = _data[0:_locate] + _data[_locate + len(_str):]
+            _data = _data[:_locate] + _data[_locate + len(_str):]
 
         return ''.join(_data)
 

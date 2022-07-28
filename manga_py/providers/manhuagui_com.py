@@ -19,7 +19,7 @@ class ManhuaGuiCom(Provider, Std):
         return self.re.search(r'/comic/[^/]+/(\d+)', chapter.get('href')).group(1)
 
     def get_archive_name(self) -> str:
-        return super().get_archive_name() + '-' + self._get_ch_idx()
+        return f'{super().get_archive_name()}-{self._get_ch_idx()}'
 
     def get_chapter_index(self) -> str:
         chapter = self.chapter
@@ -28,18 +28,16 @@ class ManhuaGuiCom(Provider, Std):
         if span:
             span = span[0].text_content_full()
             i = self.re.search(r'(\d+)', span).group(1)
-            return '{}-{}'.format(i, idx)
-        return '0-{}'.format(idx)
+            return f'{i}-{idx}'
+        return f'0-{idx}'
 
     def get_content(self):
         _ = self._get_name(r'/comic/(\d+)')
-        return self.http_get('{}/comic/{}/'.format(self.domain, _))
+        return self.http_get(f'{self.domain}/comic/{_}/')
 
     def get_manga_name(self) -> str:
         url = self.get_url()
-        selector = 'h1'
-        if self.re.search(r'/comic/\d+/\d+\.html', url):
-            selector = 'h1 > a'
+        selector = 'h1 > a' if self.re.search(r'/comic/\d+/\d+\.html', url) else 'h1'
         return self.html_fromstring(url, selector, 0).text_content_full()
 
     def get_chapters(self):
@@ -56,16 +54,15 @@ class ManhuaGuiCom(Provider, Std):
         images = []
         md5 = data.get('sl', {}).get('md5', '')
         cid = data.get('cid', '')
+        prior = 3
         for i in data.get('files', []):
-            prior = 3
             ln = len(self.servers)
             server = int(random.random() * (ln + prior))
             server = 0 if server < prior else server - prior
-            images.append('http://{}{}{}?cid={}&md5={}'.format(
-                self.servers[server],
-                data.get('path', ''),
-                i, cid, md5
-            ))
+            images.append(
+                f"http://{self.servers[server]}{data.get('path', '')}{i}?cid={cid}&md5={md5}"
+            )
+
         return images
 
     def get_files(self):

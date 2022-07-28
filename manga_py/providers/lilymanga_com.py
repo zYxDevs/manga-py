@@ -13,10 +13,18 @@ class LilyMangaCom(RawDevArtComOld):
 
     def get_chapters(self):
         manga_id = self._elements('#manga-chapters-holder')[0].get('data-id')
-        items_content = self.http().post('{}/wp-admin/admin-ajax.php'.format(self.domain), data={
-            'action': 'manga_get_chapters',
-            'manga': manga_id,
-        }).text
+        items_content = (
+            self.http()
+            .post(
+                f'{self.domain}/wp-admin/admin-ajax.php',
+                data={
+                    'action': 'manga_get_chapters',
+                    'manga': manga_id,
+                },
+            )
+            .text
+        )
+
 
         return self._elements('.wp-manga-chapter > a', items_content)
 

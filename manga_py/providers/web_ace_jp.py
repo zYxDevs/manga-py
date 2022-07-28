@@ -16,15 +16,10 @@ class WebAceJp(Provider, Std):
             r'第(.+?)?話(?:-(.+?))?',
             self.chapter[1]
         )
-        if not idx:
-            return self.chapter[1]
-        return self._join_groups(idx.groups())
+        return self._join_groups(idx.groups()) if idx else self.chapter[1]
 
     def __url(self):
-        return '{}/youngaceup/contents/{}/'.format(
-            self.domain,
-            self.__idx()
-        )
+        return f'{self.domain}/youngaceup/contents/{self.__idx()}/'
 
     def __idx(self):
         return self.re.search(
@@ -39,7 +34,7 @@ class WebAceJp(Provider, Std):
         return self.text_content_full(self.content, '.credit h1')
 
     def get_chapters(self):
-        content = self.http_get(self.__url() + 'episode/')
+        content = self.http_get(f'{self.__url()}episode/')
         selector = '.media:not(.yudo) > a.navigate-right'
         items = []
         n = self.normalize_uri
@@ -51,7 +46,7 @@ class WebAceJp(Provider, Std):
 
     def get_files(self):
         n = self.normalize_uri
-        with self.http().get(self.chapter[0] + '/json/') as resp:
+        with self.http().get(f'{self.chapter[0]}/json/') as resp:
             items = resp.json()
         return [n(i) for i in items]
 

@@ -37,7 +37,7 @@ class Formatter(MetavarTypeHelpFormatter):
                 args_len = len(action.option_strings) - 1
                 for i, option_string in enumerate(action.option_strings):
                     if i == args_len:
-                        parts.append('%s %s' % (option_string, args_string))
+                        parts.append(f'{option_string} {args_string}')
                     else:
                         parts.append(option_string)
             return ', '.join(parts)

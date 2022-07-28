@@ -16,7 +16,7 @@ class MangaClubRu(Provider, Std):
     def get_content(self):
         if not self.local_storage:
             self.get_manga_name()
-        return self.http_get('{}/{}.html'.format(self.domain, self.local_storage[0]))
+        return self.http_get(f'{self.domain}/{self.local_storage[0]}.html')
 
     def get_manga_name(self) -> str:
         selector = r'\.ru(?:/manga/view)?/(?:(\d+-.+)/(.+)\.html)'

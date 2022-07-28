@@ -27,21 +27,18 @@ class MangaChanMe(Provider, Std):
 
     def get_chapters(self):
         url = self._online_(self.get_url())
-        url = '{}/manga/{}'.format(
-            self.domain,
-            self.re.search(self._full_name_selector, url).group(1)
-        )
+        url = f'{self.domain}/manga/{self.re.search(self._full_name_selector, url).group(1)}'
+
         return self.html_fromstring(url, '.table_cha .manga a')
 
     def get_files(self):
         content = self.http_get(self.chapter)
         items = self.re.search(r'"?fullimg"?\s?:\s?(\[.+\])', content).group(1)
-        images = self.json.loads(items.replace('",]', '"]'))  # patch
-        return images
+        return self.json.loads(items.replace('",]', '"]'))
 
     def get_cover(self):
         selector = r'\.\w{2,7}/[^/]+/(\d+-.+\.html)'
-        url = '{}/manga/{}'.format(self.domain, self._get_name(selector))
+        url = f'{self.domain}/manga/{self._get_name(selector)}'
         img = self._elements('#cover', self.http_get(url))
         if img and len(img):
             return img[0].get('src')

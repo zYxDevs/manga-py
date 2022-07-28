@@ -30,10 +30,7 @@ class ProviderParams:
         try:
             if not self._storage.get('domain_uri', None):
                 parsed = urlparse(_url, 'https')
-                self._storage['domain_uri'] = '{}://{}'.format(
-                    parsed.scheme,
-                    parsed.netloc
-                )
+                self._storage['domain_uri'] = f'{parsed.scheme}://{parsed.netloc}'
             return self._storage.get('domain_uri', '')
         except Exception:
             error('url "%s" is broken!' % _url)
